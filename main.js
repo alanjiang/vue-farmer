@@ -8,6 +8,7 @@ import Axios from 'axios';
 import product_data from './utils/product.js';
 
 import menus from './utils/menus.js';
+import categorys from './utils/categorys';
 import Mint from 'mint-ui';
 import 'mint-ui/lib/style.css'; 
 
@@ -21,8 +22,15 @@ Vue.prototype.$axios = Axios;
 
 // 路由配置
 const Routers = [
+	 {
+	        path: '/index',
+	        meta: {
+	            title: 'Foot Bar'
+	        },
+	        component: (resolve) => require(['./views/FootBar.vue'], resolve)
+	 },
     {
-        path: '/index',
+        path: '/footBar',
         meta: {
             title: '首页'
         },
@@ -65,13 +73,7 @@ const Routers = [
         component: (resolve) => require(['./views/vuexdemo.vue'], resolve)
     },
     
-    {
-        path: '/footBar',
-        meta: {
-            title: 'Foot Bar'
-        },
-        component: (resolve) => require(['./views/FootBar.vue'], resolve)
-    },
+   
     
     {
         path: '/detail/:id',
@@ -106,7 +108,8 @@ const state = {
   productList:[],
   cartList:[],
   menus:null,
-  adShow:true
+  adShow:true,
+  categorys:[]
 }
 const mutations = {
     increment (state) {
@@ -130,6 +133,9 @@ const mutations = {
 	setAdShow(state, adShow){
 		
 		 state.adShow=adShow;
+	},
+	setCategorys(state,category_datas){
+		state.categorys=category_datas
 	},
 	// 添加到购物车
     addCart (state, id) {
@@ -213,9 +219,12 @@ const actions = {
 	    getAdShow ({commit, state,adShow}){
 			
 			commit('setAdShow',adShow)
-	   }
+	   },
 	  
-	  
+	  getCategorys ({commit, state}){
+			
+			commit('setCategorys',categorys)
+	},
    
 }
 

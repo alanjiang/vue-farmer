@@ -35,7 +35,7 @@
       
       
       
-        <mt-cell class="page-part" title="当前选中" :value="selected" />
+     <mt-cell class="page-part" title="当前位置" :value="selected" />
       
       
       
@@ -43,23 +43,45 @@
       <mt-tab-container class="page-tabbar-container" v-model="selected">
         
     
-               <mt-tab-container-item id="主页">
-                
-                  <div v-show="list.length">
+      <mt-tab-container-item id="主页">
+              
+              <!-- start of  mt-navbar -->
+              <mt-navbar v-model="category_selected">
+                 <mt-tab-item  v-for="category in categorys" :id="category.name">
+                   <h4 style="font-weight:bold;font-size:1.2em;"> {{ category.name }} </h4>
+                 </mt-tab-item>
+
+              </mt-navbar>
+              
+              <!-- end of mt-navbar -->
+              
+              <mt-tab-container v-model="category_selected">
+              
+                  <mt-tab-container-item  v-for="category in categorys" :id="category.name">
+                    
+                    <!-- 展示商品-->
+                    
+                    <div v-show="list.length">
                
-                   <Product v-for="item in list" :info="item" :key="item.id">
-                   </Product>
+                      <Product v-for="item in list" :info="item" :key="item.id"> </Product>
+                  
                    
-                   <div class="product-not-found" v-show="!list.length">
+                     <div class="product-not-found" v-show="!list.length">
                         暂无相关信息
-                   </div>
+                      </div>
                
-                 </div>  
-                 
-                 <div> Popup here . </Popup> </div>
-                 
+                  </div> 
+                  
+                  <!--  end of 展示商品 --> 
+                 </mt-tab-container-item>
+               
+             </mt-tab-container>
+
                      
-              </mt-tab-container-item>
+      </mt-tab-container-item> <!-- end of 主页-->
+              
+              
+              
         <mt-tab-container-item id="客服">
           
           
@@ -117,10 +139,10 @@
 
 <script>
  
-import Product from './product.vue';
-import Cart from './cart.vue';
-import Popup from './popup.vue';
-
+import Product from '../components/product.vue';
+import Cart from '../components/cart.vue';
+import Popup from '../components/popup.vue';
+ import { Navbar, TabItem } from 'mint-ui';
 
 export default {
   components:{Product,Cart},
@@ -135,6 +157,10 @@ export default {
      adShow () {
      
          return this.$store.state.adShow;
+     },
+     categorys () {
+     
+         return this.$store.state.categorys;
      }
      
   
@@ -174,7 +200,7 @@ export default {
       //mounted 阶段初始化商品列表, 存储在store.state.productList中。
       this.$store.dispatch('getProductList');
       this.$store.dispatch('getMenus');
-      
+       this.$store.dispatch('getCategorys');
       
   
   },
@@ -184,7 +210,9 @@ export default {
   data() {
     return {
    
-      selected: '主页'
+      selected: '主页',
+      
+      category_selected:'五月新品'
      
       
     };

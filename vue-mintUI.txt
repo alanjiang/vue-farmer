@@ -1,1 +1,0 @@
-1,npm -i install mint-ui --save
