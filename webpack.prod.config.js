@@ -3,10 +3,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var merge = require('webpack-merge');
 var webpackBaseConfig = require('./webpack.config.js');
-//var UglirfyJsPlugin = require('uglifyjs-webpack-plugin');
-
-//var UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
-
+var CleanWebpackPlugin = require('clean-webpack-plugin');
 // 清空基本配置的插件列表
 webpackBaseConfig.plugins = [];
 
@@ -45,6 +42,11 @@ module.exports = merge(webpackBaseConfig, {
             template: './index.ejs',
             inject: false,
             assetsPublicPath:'./'
-        })
+        }),
+        new CleanWebpackPlugin({
+        		
+            cleanAfterEveryBuildPatterns: ['dist/*']
+          }
+        )
     ]
 });

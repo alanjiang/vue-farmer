@@ -1,21 +1,29 @@
 <template>
 
+<p>
+
+<mt-button type="danger" @click.native="popClick">选取型号</mt-button>
+
+
 <mt-popup
   v-model="popupShow"
-  popup-transition="popup-fade"
-  position="top" name="hello"
-  >
+    popup-transition="popup-fade">
+  <div style="width:450px;height:300px;">
+    <mt-checklist
+  title="checkbox list"
   
-  <p> Hello</p>
-  
+  :options="options">
+</mt-checklist>
+ </div>
 </mt-popup>
 
+</p>
 
 </template>
 
 <script>
 
-import { Popup } from 'mint-ui';
+import { Popup,Button,Checklist } from 'mint-ui';
 
 
 
@@ -27,11 +35,21 @@ export default{
     
       return {
       
-       popupShow:true
-      
+       popupShow:false,
+       options:["A","B","C"]
+       
       } 
     
+    },
+    methods:{
+    
+        popClick:function(){
+        
+          this.popupShow=true;
+        }
     }
+    
+     
 
 
 }

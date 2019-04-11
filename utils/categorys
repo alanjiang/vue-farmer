@@ -4,9 +4,9 @@ export default
 	    {name:'科普体验',no:1},
 	    {name:'农场亲子',no:2},
 		{name:'五月新品',no:3},
-		{name:'限时特卖',no:4},
 		{name:'热带水果',no:5},
-		{name:'五谷杂粮',no:6},
+		{name:'限时特卖',no:4}
+		
 	]
 	
 

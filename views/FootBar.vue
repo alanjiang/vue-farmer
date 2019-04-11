@@ -146,6 +146,11 @@ import Popup from '../components/popup.vue';
 
 export default {
   components:{Product,Cart},
+  
+  data(){
+  
+    
+  },
   computed:{
      list () {
        return this.$store.state.productList;
@@ -154,10 +159,13 @@ export default {
       menus (){
          return  this.$store.state.menus;
      },
-     adShow () {
      
+     adShow() {
+       
          return this.$store.state.adShow;
-     },
+     
+     }, 
+     
      categorys () {
      
          return this.$store.state.categorys;
@@ -168,9 +176,17 @@ export default {
   methods:{
     
       switchIcon (src) {
-         if(src.indexOf('Home') === -1 ){
-           this.$store.dispatch('getAdShow',false);
+         
+         var b=(src.indexOf('home')>0);
+         //alert('--b='+b+',---this.$store='+this.$store);
+         if(b){
+          this.$store.dispatch('getAdShowTrue');
+         }else{
+            this.$store.dispatch('getAdShowFalse');
          }
+         
+         
+         
          this.$store.state.menus.forEach(function(item){
               if(src == item['image'])//点击的ICON变成激活图片
               {
@@ -200,7 +216,7 @@ export default {
       //mounted 阶段初始化商品列表, 存储在store.state.productList中。
       this.$store.dispatch('getProductList');
       this.$store.dispatch('getMenus');
-       this.$store.dispatch('getCategorys');
+      this.$store.dispatch('getCategorys');
       
   
   },
@@ -221,7 +237,8 @@ export default {
   watch: {
         selected: function (val, oldVal) {
         //alert(val+','+oldVal);
-        
+         
+         
       }
     }
 };

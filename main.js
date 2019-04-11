@@ -130,9 +130,9 @@ const mutations = {
 		state.menus=menu_datas;
 	},
 	
-	setAdShow(state, adShow){
-		
-		 state.adShow=adShow;
+	setAdShow(state, as){
+		//alert('----set adShow:'+as);
+		 state.adShow=as;
 	},
 	setCategorys(state,category_datas){
 		state.categorys=category_datas
@@ -140,7 +140,7 @@ const mutations = {
 	// 添加到购物车
     addCart (state, id) {
 		
-		alert('--main id='+id);
+		//alert('--main id='+id);
         // 先判断购物车是否已有，如果有，数量+1
 		var isAdded='Y';
 		var count=1;
@@ -154,7 +154,7 @@ const mutations = {
 			}
 		}
        
-        alert('---isAdded='+isAdded);
+        //alert('---isAdded='+isAdded);
         if (isAdded === 'Y') {
             count ++;
         } else {
@@ -163,7 +163,7 @@ const mutations = {
                 count: 1
             })
         }
-        alert('---'+isAdded+','+count);
+        //alert('---'+isAdded+','+count);
     },
     
     
@@ -216,15 +216,20 @@ const actions = {
 		commit('setMenus',menus)
 	  },
 	  
-	    getAdShow ({commit, state,adShow}){
+	    getAdShowFalse ({commit, state}){
 			
-			commit('setAdShow',adShow)
+			commit('setAdShow',false)
 	   },
-	  
+	   getAdShowTrue ({commit, state}){
+			
+			commit('setAdShow',true)
+	   },
 	  getCategorys ({commit, state}){
+		   
+		  
 			
 			commit('setCategorys',categorys)
-	},
+	   }
    
 }
 

@@ -1,7 +1,7 @@
 export default [
     {
         id: 1,
-        name: 'AirPods',
+        name: '优质上海青',
         brand: 'Apple',
         image: '../images/c1.jpg',
         sales: 10000,
@@ -20,7 +20,7 @@ export default [
     },
     {
         id: 2,
-        name: 'BeatsX 入耳式耳机',
+        name: '海南红辣椒', 
         brand: 'Beats',
         image: '../images/c2.jpg',
         sales: 11000,
@@ -38,7 +38,7 @@ export default [
     },
     {
         id: 3,
-        name: 'Beats Solo3 Wireless 头戴式式耳机',
+        name: '增城菜心',
         brand: 'Beats',
         image: '../images/c3.jpg',
         sales: 5000,
@@ -56,7 +56,7 @@ export default [
     },
     {
         id: 4,
-        name: 'Beats Pill+ 便携式扬声器',
+        name: '河南焦作玉米',
         brand: 'Beats',
         image: '../images/c4.jpg',
         sales: 3000,
@@ -65,7 +65,7 @@ export default [
     },
     {
         id: 5,
-        name: 'Sonos PLAY:1 无线扬声器',
+        name: '东北玉米',
         brand: 'Sonos',
         image: '../images/c5.jpg',
         sales: 8000,
@@ -84,7 +84,7 @@ export default [
     },
     {
         id: 6,
-        name: 'Powerbeats3 by Dr. Dre Wireless 入耳式耳机',
+        name: '冰岛西兰花',
         brand: 'Beats',
         image: '../images/c6.jpg',
         sales: 12000,
@@ -93,7 +93,7 @@ export default [
     },
     {
         id: 7,
-        name: 'Beats EP 头戴式耳机',
+        name: '广西玉林红萝卜',
         brand: 'Beats',
         image: '../images/c7.jpg',
         sales: 25000,
@@ -112,7 +112,7 @@ export default [
     },
     {
         id: 8,
-        name: 'B&O PLAY BeoPlay A1 便携式蓝牙扬声器',
+        name: '本土丝瓜',
         brand: 'B&O',
         image: '../images/c8.jpg',
         sales: 15000,
@@ -121,7 +121,7 @@ export default [
     },
     {
         id: 9,
-        name: 'Bose® QuietComfort® 35 无线耳机',
+        name: '天然花菜',
         brand: 'Bose',
         image: '../images/c9.jpg',
         sales: 14000,
@@ -140,7 +140,7 @@ export default [
     },
     {
         id: 10,
-        name: 'B&O PLAY Beoplay H4 无线头戴式耳机',
+        name: '国园三剑客',
         brand: 'B&O',
         image: '../images/c10.jpg',
         sales: 9000,
