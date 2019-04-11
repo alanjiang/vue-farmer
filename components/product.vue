@@ -1,6 +1,6 @@
 <template>
-    <div class="product">
-        <router-link :to="'/detail/' + info.id" class="product-main">
+    <div class="product" :style="{width:screenWidth>600 ? '25%' : '50%'}">
+        <router-link :info="info" :to="'/detail/' + info.id" class="product-main">
 
             <img  v-lazy="info.image">
             <h4>{{ info.name }}</h4>
@@ -20,14 +20,17 @@ import { Toast } from 'mint-ui';
             info: Object
         },
         data () {
-            return {
+             return {
                 colors: {
                     '白色': '#ffffff',
                     '金色': '#dac272',
                     '蓝色': '#233472',
                     '红色': '#f2352e'
-                }
+                },
+                  screenWidth: document.body.clientWidth
             }
+             
+            
         },
         methods: {
             addToCart () {
@@ -37,15 +40,22 @@ import { Toast } from 'mint-ui';
                      message: '操作成功',
                      iconClass: 'icon icon-success'
                   });
+            },
+            getScreenWidth(){
+            
+               var width=document.body.clientWidth;
+               alert('screen width='+width);
             }
         }
+        
+       
     };
 </script>
 <style scoped>
 
 
 .product{
-        width: 50%;
+        
         float: left;
     }
     .product-main{

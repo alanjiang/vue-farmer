@@ -147,10 +147,7 @@ import Popup from '../components/popup.vue';
 export default {
   components:{Product,Cart},
   
-  data(){
   
-    
-  },
   computed:{
      list () {
        return this.$store.state.productList;
