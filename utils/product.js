@@ -140,7 +140,7 @@ export default [
     },
     {
         id: 10,
-        name: '国园三剑客',
+        name: '田园三剑客',
         brand: 'B&O',
         image: '../images/c10.jpg',
         sales: 9000,

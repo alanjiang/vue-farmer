@@ -38,8 +38,7 @@
      <mt-cell class="page-part" title="当前位置" :value="selected" />
       
       
-      
-
+    
       <mt-tab-container class="page-tabbar-container" v-model="selected">
         
     
@@ -47,7 +46,7 @@
               
               <!-- start of  mt-navbar -->
               <mt-navbar v-model="category_selected">
-                 <mt-tab-item  v-for="category in categorys" :id="category.name">
+                 <mt-tab-item  v-for="category in categorys" :key="category.name" :id="category.name">
                    <h4 style="font-weight:bold;font-size:1.2em;"> {{ category.name }} </h4>
                  </mt-tab-item>
 
@@ -57,7 +56,7 @@
               
               <mt-tab-container v-model="category_selected">
               
-                  <mt-tab-container-item  v-for="category in categorys" :id="category.name">
+                  <mt-tab-container-item  v-for="category in categorys" :key="category.name" :id="category.name">
                     
                     <!-- 展示商品-->
                     
@@ -69,13 +68,21 @@
                      <div class="product-not-found" v-show="!list.length">
                         暂无相关信息
                       </div>
+                      
+                      
+                     
                
                   </div> 
+                  
+                   <PopupItem> </PopupItem>
                   
                   <!--  end of 展示商品 --> 
                  </mt-tab-container-item>
                
              </mt-tab-container>
+             
+              
+             
 
                      
       </mt-tab-container-item> <!-- end of 主页-->
@@ -115,6 +122,10 @@
           <router-link to="/">
             <mt-button type="danger" size="large">退出</mt-button>
           </router-link>
+           
+          
+           
+           
         </mt-tab-container-item>
       </mt-tab-container>
       
@@ -141,13 +152,12 @@
  
 import Product from '../components/product.vue';
 import Cart from '../components/cart.vue';
-import Popup from '../components/popup.vue';
+import PopupItem from '../components/popup.vue';
  import { Navbar, TabItem } from 'mint-ui';
 
 export default {
-  components:{Product,Cart},
-  
-  
+  components:{Product,Cart,PopupItem},
+ 
   computed:{
      list () {
        return this.$store.state.productList;
@@ -167,6 +177,7 @@ export default {
      
          return this.$store.state.categorys;
      }
+     
      
   
   },
@@ -217,6 +228,8 @@ export default {
       
   
   },
+  
+  
  
   name: 'FootBar',
   
@@ -225,7 +238,9 @@ export default {
    
       selected: '主页',
       
-      category_selected:'五月新品'
+      category_selected:'科普体验'
+      
+     
      
       
     };

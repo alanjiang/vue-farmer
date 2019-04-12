@@ -6,7 +6,7 @@
             <h4>{{ info.name }}</h4>
             <div class="product-color" :style="{ background: colors[info.color]}"></div>
             <div class="product-cost">¥ {{ info.cost }}</div>
-            <div class="product-add-cart" @click.prevent="addToCart">加入购物车</div>
+            <div class="product-add-cart" @click.prevent="addToCart(info.id)">加入购物车</div>
         </router-link>
     </div>
 </template>
@@ -17,7 +17,7 @@ import { Toast } from 'mint-ui';
 
     export default {
         props: {
-            info: Object
+            info: {id:1, name:'',cost:0, image:''}
         },
         data () {
              return {
@@ -28,18 +28,22 @@ import { Toast } from 'mint-ui';
                     '红色': '#f2352e'
                 },
                   screenWidth: document.body.clientWidth
+                  
             }
              
             
         },
         methods: {
-            addToCart () {
-                alert('--id='+this.info.id);
-                this.$store.commit('addCart', this.info.id);
+            addToCart (id) {
+               
+                this.$store.commit('addCart', id);
                 Toast({
                      message: '操作成功',
                      iconClass: 'icon icon-success'
                   });
+                  
+                  this.$bus.emit('resetPopShow','hello world');
+                 
             },
             getScreenWidth(){
             

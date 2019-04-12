@@ -11,14 +11,15 @@ import menus from './utils/menus.js';
 import categorys from './utils/categorys';
 import Mint from 'mint-ui';
 import 'mint-ui/lib/style.css'; 
-
+import VueBus from 'vue-bus';
 Vue.use(Vuex);
 Vue.use(VueRouter);
 Vue.use(Mint);
+Vue.use(VueBus);
 
+//Vue.prototype.$axios = Axios;
 
-Vue.prototype.$axios = Axios;
-
+//Vue.prototype.$bus = VueBus;
 
 // 路由配置
 const Routers = [
