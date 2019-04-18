@@ -6,6 +6,7 @@
             <div class="cart-header-title">购物清单</div>
             <div class="cart-header-main">
                 <div class="cart-info">商品信息</div>
+                <div class="cart-symbol">规格</div>
                 <div class="cart-price">单价</div>
                 <div class="cart-count">数量</div>
                 <div class="cart-cost">小计</div>
@@ -18,7 +19,11 @@
                     <img :src="productDictList[item.id].image">
                     <span>{{ productDictList[item.id].name }}</span>
                 </div>
-                <div class="cart-price">¥ {{ productDictList[item.id].cost }}</div>
+                <div class="cart-symbol">
+                    {{ item.symbol }}
+                </div>
+                
+                <div class="cart-price">¥ {{ getPrice(item.id,item.symbol) }}</div>
                 <div class="cart-count">
                     <span class="cart-control-minus" @click="handleCount(index, -1)">-</span>
                     {{ item.count }}
@@ -65,6 +70,7 @@
             cartList () {
                 return this.$store.state.cartList;
             },
+            
             productDictList () {
                 const dict = {};
                 this.productList.forEach(item => {
@@ -95,7 +101,34 @@
             }
         },
         methods: {
-        
+          getPrice(id,symbol)
+          {
+          
+               alert('---symbol='+symbol);
+              if(symbol)
+              {
+              
+                 var obj=this.productList.find(item => item.id === id );
+                 
+                 if(obj)
+                 {
+                 
+                     if(obj.mer_attr_price)
+                     {
+                       
+                        var mer= obj.mer_attr_price.find(item => item.symbol === symbol );
+                     
+                        if(mer)
+                        {
+                            alert('---price='+mer.price);
+                           return mer.price;
+                           
+                        }
+                     }
+                 }
+                 
+              }
+          },   
             //调用 main.js中mutations 中的方法，传实参
             handleCount (index, count) {
                 if (count < 0 && this.cartList[index].count === 1) return;
@@ -157,6 +190,10 @@
     }
     div.cart-info{
         width: 25%;
+        text-align: left;
+    }
+    div.cart-symbol{
+        width: 10%;
         text-align: left;
     }
     .cart-price{

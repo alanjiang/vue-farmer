@@ -4,9 +4,11 @@
     <div class="page-wrap">
 
       <div class="page-title">
+     
           <mt-header fixed title="好吃点农场">
             <router-link to="/" slot="left">
-            <mt-button icon="back">返回</mt-button>
+             <img src="../images/wenbixia.jpg" width="25" height="25" >
+            
            </router-link>
           <mt-button  slot="right">
               <mt-badge type="error">10</mt-badge>
@@ -91,18 +93,8 @@
               
         <mt-tab-container-item id="客服">
           
-          
-             <mt-cell title="默认" is-link>
-             <span>广东省广州市天河区天润路124号</span>
-             <img slot="icon" src="../images/kefu.png" width="60" height="60">
-            </mt-cell>
-             <mt-cell title="收件地址1" is-link>
-             <span>广东省广州市天河区天润路124号</span>
-            
-            </mt-cell>
-             <mt-cell title="收件地址2" is-link>
-             <span>广东省广州市天河区天润路124号</span>
-             </mt-cell>
+           <router-link to="/myDialog">My Dialog</router-link>
+             
           
         </mt-tab-container-item>
         <mt-tab-container-item id="门店">
@@ -119,9 +111,14 @@
         
         <mt-tab-container-item id="我的">
            
-          <router-link to="/">
-            <mt-button type="danger" size="large">退出</mt-button>
-          </router-link>
+          <!-- tab start -->
+          
+          
+           <My></My>
+          
+          
+          
+          <!-- tab end -->
            
           
            
@@ -153,10 +150,11 @@
 import Product from '../components/product.vue';
 import Cart from '../components/cart.vue';
 import PopupItem from '../components/popup.vue';
- import { Navbar, TabItem } from 'mint-ui';
+import My from '../components/my.vue';
+import { Navbar, TabItem } from 'mint-ui';
 
 export default {
-  components:{Product,Cart,PopupItem},
+  components:{Product,Cart,PopupItem,My},
  
   computed:{
      list () {
@@ -226,6 +224,8 @@ export default {
       this.$store.dispatch('getMenus');
       this.$store.dispatch('getCategorys');
       
+      
+      
   
   },
   
@@ -240,8 +240,6 @@ export default {
       
       category_selected:'科普体验'
       
-     
-     
       
     };
   },
@@ -272,6 +270,7 @@ export default {
     height: 100%;
     padding-top:40px;
     padding-bottom: 60px;
+    background:#FAFAFA;
     
     
  

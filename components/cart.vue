@@ -1,11 +1,11 @@
 <template>
     <div class="cart">
     
-       
         <div class="cart-header" v-show="cartList.length > 0">
             <div class="cart-header-title">购物清单</div>
             <div class="cart-header-main">
                 <div class="cart-info">商品信息</div>
+               
                 <div class="cart-price">单价</div>
                 <div class="cart-count">数量</div>
                 <div class="cart-cost">小计</div>
@@ -15,21 +15,25 @@
         <div class="cart-content">
             <div class="cart-content-main" v-for="(item, index) in cartList">
                 <div class="cart-info">
-                    <img :src="productDictList[item.id].image">
-                    <span>{{ productDictList[item.id].name }}</span>
+                    <img :src="item.image">
+                    
                 </div>
-                <div class="cart-price">¥ {{ productDictList[item.id].cost }}</div>
+                
+                
+                <div class="cart-price">¥ {{ item.price }}</div>
                 <div class="cart-count">
-                    <span class="cart-control-minus" @click="handleCount(index, -1)">-</span>
+                    <span class="cart-control-minus" @click="subMer(item.id,item.symbol)">-</span>
                     {{ item.count }}
-                    <span class="cart-control-add" @click="handleCount(index, 1)">+</span>
+                    <span class="cart-control-add" @click="addMer(item.id,item.symbol)">+</span>
                 </div>
-                <div class="cart-cost">¥ {{ productDictList[item.id].cost * item.count }}</div>
+                <div class="cart-cost">¥ {{ item.price * item.count }}</div>
                 <div class="cart-delete">
-                    <span class="cart-control-delete" @click="handleDelete(index)">删除</span>
+                    <span class="cart-control-delete" @click="delMer(item.id,item.symbol)">删除</span>
                 </div>
+                
+                <div class="cart-extend">{{ item.name }} &nbsp;规格：{{ item.label}}</div>
             </div>
-            <div class="cart-empty" v-if="!cartList.length">
+            <div class="cart-empty" v-if="cartList.length == 0">
             
              <img src="../images/cart.png" > <br>
             购物车为空
@@ -59,19 +63,30 @@
     </div>
 </template>
 <script>
-    import product_data from '../utils/product.js';
+    import { Navbar, Toast } from 'mint-ui';
     export default {
+      data () {
+            return {
+               
+                promotionCode: '',
+                promotion: 0
+            }
+        },
         computed: {
             cartList () {
-                return this.$store.state.cartList;
+                
+                if(this.$store.state.cartList.length > 0){
+                   
+                   return this.$store.state.cartList;
+                }
+                if(localStorage.getItem("cartList")!=null){
+                  
+                  return JSON.parse(localStorage.getItem("cartList"));
+                }
+                  return [];
+                
             },
-            productDictList () {
-                const dict = {};
-                this.productList.forEach(item => {
-                    dict[item.id] = item;
-                });
-                return dict;
-            },
+            
             countAll () {
                 let count = 0;
                 this.cartList.forEach(item => {
@@ -82,30 +97,50 @@
             costAll () {
                 let cost = 0;
                 this.cartList.forEach(item => {
-                    cost += this.productDictList[item.id].cost * item.count;
+                    cost += item.price * item.count;
                 });
                 return cost;
             }
         },
-        data () {
-            return {
-                productList: product_data,
-                promotionCode: '',
-                promotion: 0
-            }
-        },
+       
         methods: {
-        
+          
             //调用 main.js中mutations 中的方法，传实参
-            handleCount (index, count) {
-                if (count < 0 && this.cartList[index].count === 1) return;
-                this.$store.commit('editCartCount', {
-                    id: this.cartList[index].id,
-                    count: count
+             subMer(idValue, symbolValue) {
+                 alert('---'+idValue+','+symbolValue);
+                this.cartList.find(item => { 
+                     if(idValue == item.id && symbolValue == item.symbol){
+                         item.count=item.count-1;
+                         if(item.count <=0 ){
+                           item.count=1;
+                         }
+                         
+                          this.$store.commit('editCartCount',item);
+                     }
                 });
+                
             },
-            handleDelete (index) {
-                this.$store.commit('deleteCart', this.cartList[index].id);
+            addMer (idValue, symbolValue) {
+            
+                
+                this.cartList.find(item => { 
+                     if(idValue == item.id && symbolValue == item.symbol)
+                     {
+                          item.count=item.count+1;
+                          if(item.count > item.num){
+                           Toast({
+                               message: '超出最大库存:'+item.num,
+                               iconClass: 'icon icon-success'
+                              });
+                            item.count=item.num;
+                          }
+                         this.$store.commit('editCartCount',{id:item.id,symbole:item.symbol,count:item.count});
+                      }
+                });
+                
+            },
+            delMer (idValue,symbolValue) {
+                this.$store.commit('deleteCart', {id:idValue,symbol:symbolValue});
             },
             handleCheckCode () {
                 if (this.promotionCode === '') {
@@ -128,7 +163,7 @@
 </script>
 <style scoped>
     .cart{
-        margin: 32px;
+        margin: 1px;
         background: #fff;
         border: 1px solid #dddee1;
         border-radius: 10px;
@@ -144,37 +179,54 @@
         overflow: hidden;
         border-bottom: 1px solid #dddee1;
         background: #eee;
-        overflow: hidden;
+        
     }
     .cart-empty{
         text-align: center;
         padding: 32px;
     }
     .cart-header-main div{
-        text-align: center;
+        text-align: left;
         float: left;
         font-size: 14px;
     }
     div.cart-info{
         width: 25%;
         text-align: left;
+        overflow:auto;
+        
     }
+   
     .cart-price{
-        width: 10%;
+        width: 15%;
+        overflow:auto;
+        text-align:left;
     }
     .cart-count{
         width: 35%;
+        overflow:auto;
+        text-align:left;
     }
     .cart-cost{
-        width: 10%;
+        width: 15%;
+        overflow:auto;
+        text-align:left;
     }
     .cart-delete {
         width: 10%;
+        overflow:auto;
+        text-align:left;
+    }
+    .cart-extend{
+    
+       width:100%;
+       text-align:left;
+       padding:5px 15px;
+      
     }
     .cart-content-main{
-        padding: 0 32px;
-        height: 60px;
-        line-height: 60px;
+        padding: 5px 32px;
+        
         text-align: center;
         border-bottom: 1px dashed #e9eaec;
         overflow: hidden;

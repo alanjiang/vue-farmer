@@ -1,32 +1,30 @@
 <template>
     <div class="product" :style="{width:screenWidth>600 ? '25%' : '50%'}">
+    
         <router-link :info="info" :to="'/detail/' + info.id" class="product-main">
-
             <img  v-lazy="info.image">
+       
             <h4>{{ info.name }}</h4>
-            <div class="product-color" :style="{ background: colors[info.color]}"></div>
-            <div class="product-cost">¥ {{ info.cost }}</div>
-            <div class="product-add-cart" @click.prevent="addToCart(info.id)">加入购物车</div>
-        </router-link>
+            
+            
+            <div class="product-cost">¥ {{ info.price }}</div>
+            <h4><mt-button type="primary" size="small" style="cursor:pointer;" @click.prevent="goBuy(info.id)">去购买</mt-button></h4>
+            
+       </router-link> 
     </div>
 </template>
 <script>
 
 
-import { Toast } from 'mint-ui';
+import { Toast,Button } from 'mint-ui';
 
     export default {
         props: {
-            info: {id:1, name:'',cost:0, image:''}
+            info: {id:1, name:'',price:0, image:'',symbol:'',label:'',num:0}
         },
         data () {
              return {
-                colors: {
-                    '白色': '#ffffff',
-                    '金色': '#dac272',
-                    '蓝色': '#233472',
-                    '红色': '#f2352e'
-                },
+                
                   screenWidth: document.body.clientWidth
                   
             }
@@ -34,21 +32,33 @@ import { Toast } from 'mint-ui';
             
         },
         methods: {
-            addToCart (id) {
-               
-                this.$store.commit('addCart', id);
-                Toast({
-                     message: '操作成功',
-                     iconClass: 'icon icon-success'
-                  });
+        
+                addToCart (idValue,symbolValue) {
+                var products=[];
+                
+                if(localStorage.getItem("productList")!=null){
+            	   products= JSON.parse(localStorage.getItem("productList"));
+                }
+                
+                //商品的基础信息:
+                var product=products.find(item => item.id == idValue);
+                //调用main.js 
+                //this.$store.commit('addCart', {id:idValue,symbol:symbolValue);
+                 
+                  //调用this.$bus.on('resetPopShow',..)事件，组件间相互通讯。
+                this.$bus.emit('resetPopShow',product);
                   
-                  this.$bus.emit('resetPopShow','hello world');
+                  
                  
             },
             getScreenWidth(){
             
                var width=document.body.clientWidth;
                alert('screen width='+width);
+            },
+            goBuy(idValue){
+               
+                 this.$router.push('/detail/'+idValue);
             }
         }
         
@@ -64,8 +74,8 @@ import { Toast } from 'mint-ui';
     }
     .product-main{
         display: block;
-        margin: 16px;
-        padding: 16px;
+        margin: 5px;
+        padding: 5px;
         border: 1px solid #dddee1;
         border-radius: 6px;
         overflow: hidden;
@@ -80,7 +90,7 @@ import { Toast } from 'mint-ui';
     h4{
      font-size: 14px;
 	 color: #000;
-	 height:50px;
+	 height:30px;
 	 overflow:hidden;
         
     }
