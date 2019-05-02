@@ -76,7 +76,9 @@
                
                   </div> 
                   
-                   <PopupItem> </PopupItem>
+                  <!-- <PopupItem> </PopupItem>-->
+                  
+                  <MyDialog></MyDialog>
                   
                   <!--  end of 展示商品 --> 
                  </mt-tab-container-item>
@@ -149,16 +151,19 @@
  
 import Product from '../components/product.vue';
 import Cart from '../components/cart.vue';
-import PopupItem from '../components/popup.vue';
+import MyDialog from '../components/myDialog.vue';
 import My from '../components/my.vue';
 import { Navbar, TabItem } from 'mint-ui';
-
+import $ from 'jquery';
 export default {
-  components:{Product,Cart,PopupItem,My},
+  components:{Product,Cart,MyDialog,My},
  
   computed:{
      list () {
-       return this.$store.state.productList;
+       //alert("---Hi---");
+       //this.testAjax();
+        return this.$store.state.productList;
+        //return this.fetchProductList();
      },
      
       menus (){
@@ -181,10 +186,78 @@ export default {
   },
   methods:{
     
+      testAjax(){
+     
+          var json={"province":"福建省"};
+		  var jsondata=JSON.stringify(json);
+          $.ajax({
+           type:"POST",
+           contentType: "application/json; charset=utf-8",
+           url:"http://www.dianliaome.com/citys", 
+           data:jsondata,
+           datatype: "json",
+           success: function (message) 
+		   {
+			   var resMsg=message.resMsg;
+			   var resCode=message.resCode;
+			  
+			   alert(resMsg);
+			   
+			   alert(message.result);
+			   
+              
+            },
+            
+            error: function (jqXHR, textStatus, errorThrown) 
+		    {
+               
+			     alert("--error="+jqXHR.readyState); 
+            }
+              
+         });
+       
+     
+     
+     },
+    
+    fetchProductList(){
+     
+          var items=[];
+          $.ajax({
+           type:"POST",
+           contentType: "application/json; charset=utf-8",
+           url:"http://localhost/dian/sales/getproductlist", 
+           data:"{\"java\":\"OK\"}",
+           datatype: "json",
+           success: function (message) 
+		   {
+		       alert(message);
+			   var resMsg=message.resMsg;
+			   var resCode=message.resCode;
+			  
+			   alert("--resMsg="+resMsg);
+			   alert(message.items);
+			   
+               items=message.items;
+            },
+            
+            error: function (jqXHR, textStatus, errorThrown) 
+		    {
+               
+			     alert("--Http error="+jqXHR.readyState+","+errorThrown); 
+            }
+              
+         });
+       
+         return items;
+     
+     },
+    
+    
       switchIcon (src) {
          
          var b=(src.indexOf('home')>0);
-         //alert('--b='+b+',---this.$store='+this.$store);
+        
          if(b){
           this.$store.dispatch('getAdShowTrue');
          }else{
@@ -225,7 +298,7 @@ export default {
       this.$store.dispatch('getCategorys');
       
       
-      
+       //this.fetchProductList();
   
   },
   
@@ -237,9 +310,7 @@ export default {
     return {
    
       selected: '主页',
-      
       category_selected:'科普体验'
-      
       
     };
   },

@@ -20,9 +20,9 @@
            {
               
 	
-        var json={"province":"福建省"};
-		var jsondata=JSON.stringify(json);
-         $.ajax({
+          var json={"province":"福建省"};
+		  var jsondata=JSON.stringify(json);
+          $.ajax({
            type:"POST",
            contentType: "application/json; charset=utf-8",
            url:"http://www.dianliaome.com/citys", 
@@ -47,7 +47,7 @@
             }
               
          });
-           }
-        }
+       }
+     }
     }
 </script>

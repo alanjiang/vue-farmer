@@ -8,7 +8,11 @@
             
             
             <div class="product-cost">¥ {{ info.price }}</div>
+            <!--
             <h4><mt-button type="primary" size="small" style="cursor:pointer;" @click.prevent="goBuy(info.id)">去购买</mt-button></h4>
+            -->
+             <h4><mt-button type="primary" size="small" style="cursor:pointer;" @click.prevent="addToCart(info.id,'')">去购买</mt-button></h4>
+           
             
        </router-link> 
     </div>
@@ -34,27 +38,30 @@ import { Toast,Button } from 'mint-ui';
         methods: {
         
                 addToCart (idValue,symbolValue) {
+               
                 var products=[];
                 
                 if(localStorage.getItem("productList")!=null){
             	   products= JSON.parse(localStorage.getItem("productList"));
                 }
-                
+               // alert('---products='+products);
                 //商品的基础信息:
                 var product=products.find(item => item.id == idValue);
+                //alert('---product='+product);
                 //调用main.js 
                 //this.$store.commit('addCart', {id:idValue,symbol:symbolValue);
                  
-                  //调用this.$bus.on('resetPopShow',..)事件，组件间相互通讯。
-                this.$bus.emit('resetPopShow',product);
-                  
+                //调用popup.vue组件中的this.$bus.on('resetPopShow',..)事件，组件间相互通讯。
+                //this.$bus.emit('resetPopShow',product);
+                //调用myDialog.vue组件中的this.$bus.on('resetPopShow',..)事件
+                this.$bus.emit('resetDialogShow',product);
                   
                  
             },
             getScreenWidth(){
             
                var width=document.body.clientWidth;
-               alert('screen width='+width);
+               //alert('screen width='+width);
             },
             goBuy(idValue){
                

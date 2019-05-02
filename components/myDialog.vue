@@ -1,26 +1,66 @@
 <template>
     <div class="dialog" v-show="showMask">
         <div class="dialog-container">
-            <div class="dialog-title">{{title}}</div>
-            <!--
-            <div class="content" v-html="content"></div>
-            -->
-            <div class="content" :is="content"></div>
+            <div class="dialog-title">商品挑选 </div>
             
-            <!--
+            <div class="content">
+            
+            <!-- starrt content -->
+            
+            <div class="image-container">
+  
+   <img src="../images/wenbixia.jpg" width="150" height="150">
+  
+  </div>
+  
+  <p>颜色</p>
+  
+  <ul>
+  <li v-for="(item,index) in colors" class="label" 
+   :class="{label_active: selected == index}"  @click="chooseItem(index)">
+      {{ item }} 
+  </li>
+  </ul>
+  <div class="clear"></div>
+  
+  <p>尺寸</p>
+ 
+  <ul>
+  <li v-for="(item,index) in sizes" class="label" 
+   :class="{label_active: selected2 == index}"  @click="chooseItem2(index)">
+      {{ item }} 
+  </li>
+  </ul>
+  
+  <div class="clear"></div>
+  
+  
+  
+  <!--
+  <mt-button type="primary" size="normal" @click="sayHello">SayHello</mt-button>
+  -->    
+            
+    <!-- end of content -->
+            
+            
+            
+            
+            </div>
+            
+            
+            
+            
             <div class="btns">
-                <div v-if="type != 'confirm'" class="default-btn" @click="closeBtn">
-                    {{cancelText}}
+                <div  class="default-btn" @click="closeBtn">
+                    不买了
                 </div>
-                <div v-if="type == 'danger'" class="danger-btn" @click="dangerBtn">
-                    {{dangerText}}
-                </div>
-                <div v-if="type == 'confirm'" class="confirm-btn" @click="confirmBtn">
-                    {{confirmText}}
+                
+                <div  class="confirm-btn" @click="confirmBtn">
+                    加入购物车
                 </div>
             </div>
             <div class="close-btn" @click="closeMask"><img src="../images/close.png"></div>
-           -->
+          
         
         </div>
         
@@ -28,46 +68,21 @@
 </template>
 <script>
 
-import myContent from 'dialogContent.vue';
 
 export default {
-     components:{
-        
-        'myContent':  myContent
-    },
+  name:'MyDialog',
+     
     props: {
-        value: {},
-        // 类型包括 defalut 默认， danger 危险， confirm 确认，
-        type:{
-            type: String,
-            default: 'default'
-        },
         
-        content: {
-            type: String,
-            default:'myContent'
-        },
-        
-        title: {
-            type: String,
-            default: ''
-        },
-        cancelText: {
-            type: String,
-            default: '取消'
-        },
-        dangerText: {
-            type: String,
-            default: '删除'
-        },
-        confirmText: {
-            type: String,
-            default: '确认'
-        },
+       
     },
     data(){
         return{
             showMask: false,
+            colors:["red","yellow","black"],
+            selected:-1,
+            sizes:["36","37","38"],
+            selected2:-1 
         }
     },
     methods:{
@@ -75,29 +90,51 @@ export default {
             this.showMask = false;
         },
         closeBtn(){
-            this.$emit('cancel');
+            //this.$emit('cancel');
             this.closeMask();
         },
         dangerBtn(){
-            this.$emit('danger');
+            //this.$emit('danger');
             this.closeMask();
         },
         confirmBtn(){
-            this.$emit('confirm');
+            //this.$emit('confirm');
             this.closeMask();
-        }
+        },
+        chooseItem(index){
+        
+         this.selected=index;
+      },
+      chooseItem2(index){
+         
+         this.selected2=index;
+      },
+      sayHello(){
+      
+       alert("sayHello");
+      
+      }
     },
     mounted(){
-        this.showMask = this.value;
+       
     },
+     created(){
+     //resetDialogShow is event from product.vue $emit 
+     this.$bus.on('resetDialogShow', (val) => {
+          //alert('---Hello---');
+          this.showMask=true;
+         
+         
+     });
+  
+  },
+    
+    
     watch:{
-        value(newVal, oldVal){
-            this.showMask = newVal;
-        },
-        showMask(val) {
-            this.$emit('input', val);
+       showMask(newVal, oldVal){
+            
         }
-    },
+    }
 }
 </script>
 <style lang="less" scoped>
@@ -110,11 +147,11 @@ export default {
         background: rgba(0, 0, 0, 0.6);
         z-index: 9999;
         .dialog-container{
-            width:  400px;
+            width:  350px;
             height: 100%;
             background: #FFFFE0;
             position: absolute;
-            top: 10px;
+            top: 50%;
             left: 50%;
             overflow:auto;
             transform: translate(-50%, -50%);
@@ -131,8 +168,9 @@ export default {
             }
             .content{
                 color: #797979;
-                line-height: 26px;
-                padding: 0 20px;
+                width:100%;
+                overflow:auto;
+                padding: 0 5px;
                 box-sizing: border-box;
             }
             .inp{
@@ -172,6 +210,7 @@ export default {
                     color: #787878;
                     &:hover{
                         color: #509EE3; 
+                        border:1px solid red;
                     }
                 }
                 .danger-btn{
@@ -207,4 +246,61 @@ export default {
             }
         }
     }
+    
+    
+    
+    p
+{
+ color:#000
+
+}
+ul{
+  padding:5px 5px;
+}
+li {
+  
+   width:90px;
+   height:25px;
+   padding:2px 2px;
+   text-align:center;
+   float:left;
+   list-style:none;
+   margin:3px 2px;
+
+}
+
+ .label{
+    
+    border-radius:8px;
+    color:#000;
+    background:#fff;
+ }
+ 
+ .label_active{
+     color:red;
+     border-radius:8px;
+     border:1px solid red;
+     background:#fff;
+ }
+
+.clear{
+
+   width:100%;
+   height:1px;
+   background:#fff;
+   display:block;
+   clear:both;
+}
+
+.image-container{
+
+   width:100%;
+   
+   margin:3px;
+   
+   background:#fff;
+   
+   text-align:left;
+}
+    
 </style>

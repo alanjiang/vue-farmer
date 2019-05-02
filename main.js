@@ -4,7 +4,6 @@ import App from './app.vue';
 import Vuex from 'vuex';
 import Axios from 'axios';
 
-
 import product_data from './utils/product.js';
 
 import menus from './utils/menus.js';
@@ -12,6 +11,8 @@ import categorys from './utils/categorys';
 import Mint from 'mint-ui';
 import 'mint-ui/lib/style.css'; 
 import VueBus from 'vue-bus';
+
+
 Vue.use(Vuex);
 Vue.use(VueRouter);
 Vue.use(Mint);
@@ -69,22 +70,23 @@ const Routers = [
         },
         component: (resolve) => require(['./views/vuexdemo.vue'], resolve)
     },
-    {
+    
+    /*{
         path: '/myDialog',
         meta: {
             title: 'My Dialog'
         },
         component: (resolve) => require(['./views/myDialog.vue'], resolve)
-    },
+    },*/
    
-    
+    /*
     {
         path: '/detail/:id',
         meta: {
             title: '商品详情页面'
         },
         component: (resolve) => require(['./views/detail.vue'], resolve)
-    },
+    },*/
     
     {
         path: '*',
@@ -123,8 +125,9 @@ const mutations = {
 	},
 	setProductList(state,data) {
 		
+		console.log('--productData='+data);
 		state.productList=data;
-		//alert('---1='+JSON.stringify(data));
+		
 		localStorage.setItem("productList",JSON.stringify(data));
 	},
 	
@@ -286,6 +289,8 @@ const mutations = {
 const actions = {
 	increment: ({ commit }) => commit('increment'),
 	decrement: ({ commit }) => commit('decrement'),  
+	
+	
     getProductList ({ commit ,state})
     {	  
 			  commit('setProductList',product_data)
