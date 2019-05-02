@@ -159,11 +159,9 @@ export default {
   components:{Product,Cart,MyDialog,My},
  
   computed:{
-     list () {
-       //alert("---Hi---");
-       //this.testAjax();
-        return this.$store.state.productList;
-        //return this.fetchProductList();
+     list2 () {
+       
+        return this.fetchProductList();
      },
      
       menus (){
@@ -222,7 +220,8 @@ export default {
     
     fetchProductList(){
      
-          var items=[];
+          var __this=this;
+         
           $.ajax({
            type:"POST",
            contentType: "application/json; charset=utf-8",
@@ -231,14 +230,18 @@ export default {
            datatype: "json",
            success: function (message) 
 		   {
-		       alert(message);
+		       //alert(message);
 			   var resMsg=message.resMsg;
 			   var resCode=message.resCode;
 			  
-			   alert("--resMsg="+resMsg);
-			   alert(message.items);
+			    alert(message.items.length);
 			   
-               items=message.items;
+			   message.items.forEach(t=>{
+			      alert(t);
+			      alert('--this.list='+__this.list);
+			      __this.list.push(t);
+			   });
+                alert("--3="+__this.list.length);
             },
             
             error: function (jqXHR, textStatus, errorThrown) 
@@ -246,10 +249,12 @@ export default {
                
 			     alert("--Http error="+jqXHR.readyState+","+errorThrown); 
             }
+            
+            
               
          });
+        
        
-         return items;
      
      },
     
@@ -296,9 +301,7 @@ export default {
       this.$store.dispatch('getProductList');
       this.$store.dispatch('getMenus');
       this.$store.dispatch('getCategorys');
-      
-      
-       //this.fetchProductList();
+      this.fetchProductList();
   
   },
   
@@ -310,13 +313,13 @@ export default {
     return {
    
       selected: '主页',
-      category_selected:'科普体验'
-      
+      category_selected:'科普体验',
+      list:[]
     };
   },
   
   watch: {
-        selected: function (val, oldVal) {
+       selected: function (val, oldVal) {
         //alert(val+','+oldVal);
          
          

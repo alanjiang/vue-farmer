@@ -1,150 +1,71 @@
 export default [
-    {
-        id: 1,
-        name: '优质上海青',
-        sort: 'Apple',
-        image: '../images/c1.jpg',
-        sales: 10000,
-        price: 1288,
-        color: '白色',
-        mer_attr_price:[
-        
-        	{'label':'颜色：红色，尺寸：L','symbol':'1,2','color':'红色','size':'L','price':1188,'num':20},
-            {'label':'颜色：红色，尺寸：M','symbol':'1,3','color':'红色','size':'M','price':1189,'num':20},
-            {'label':'颜色：红色，尺寸：S','symbol':'1,4','color':'红色','size':'S','price':1190,'num':20},
-            {'label':'颜色：黑色，尺寸：L','symbol':'2,2','color':'黑色','size':'L','price':1188,'num':20},
-            {'label':'颜色：黑色，尺寸：M','symbol':'2,3','color':'黑色','size':'M','price':1189,'num':20},
-            {'label':'颜色：黑色，尺寸：S','symbol':'2,4','color':'黑色','size':'S','price':1190,'num':20}
-          	 
-        ]
-    },
-    {
-        id: 2,
-        name: '海南红辣椒', 
-        sort: 'Beats',
-        image: '../images/c2.jpg',
-        sales: 11000,
-        price: 1188,
-        color: '白色',
-        mer_attr_price:[
-            {'label':'颜色：红色，尺寸：L','symbol':'1,2','color':'红色','size':'L','price':3488,'num':0},
-            {'label':'颜色：红色，尺寸：M','symbol':'1,3','color':'红色','size':'M','price':1189,'num':10},
-            {'label':'颜色：红色，尺寸：S','symbol':'1,4','color':'红色','size':'S','price':1190,'num':2},
-            {'label':'颜色：黑色，尺寸：L','symbol':'2,2','color':'黑色','size':'L','price':1188,'num':2},
-            {'label':'颜色：黑色，尺寸：M','symbol':'2,3','color':'黑色','size':'M','price':1189,'num':2},
-            {'label':'颜色：黑色，尺寸：S','symbol':'2,4','color':'黑色','size':'S','price':1190,'num':19}
-          	 
-          ]
-    },
-    {
-        id: 3,
-        name: '增城菜心',
-        sort: 'Beats',
-        image: '../images/c3.jpg',
-        sales: 5000,
-        price: 2288,
-        color: '金色',
-        mer_attr_price:[
-            {'label':'尺寸：L','size':'L','symbol':'1,2','price':1188,'num':123},
-            {'label':'尺寸：M','size':'M','symbol':'1,3','price':1189,'num':120},
-            {'label':'尺寸：S','size':'S','symbol':'1,4','price':1190,'num':90},
-            {'label':'尺寸：L','size':'L','symbol':'2,2','price':1188,'num':200},
-            {'label':'尺寸：M','size':'M','symbol':'2,3','price':1189,'num':90},
-            {'label':'尺寸：S','size':'S','symbol':'2,4','price':1190,'num':200}
-          	 
-          ]
-    },
-    {
-        id: 4,
-        name: '河南焦作玉米',
-        sort: 'Beats',
-        image: '../images/c4.jpg',
-        sales: 3000,
-        price: 1888,
-        color: '红色'
-    },
-    {
-        id: 5,
-        name: '东北玉米',
-        sort: 'Sonos',
-        image: '../images/c5.jpg',
-        sales: 8000,
-        price: 1578,
-        color: '白色',
-        mer_attr_price:[
-            
-            {'label':'颜色：红色，尺寸：36','symbol':'1,2','color':'红色','size':'36','price':1288,'num':20},
-            {'label':'颜色：红色，尺寸：37','symbol':'1,3','color':'红色','size':'37','price':1289,'num':20},
-            {'label':'颜色：红色，尺寸：38','symbol':'1,4','color':'红色','size':'38','price':1290,'num':20},
-            {'label':'颜色：黑色，尺寸：36','symbol':'2,2','color':'黑色','size':'36','price':1288,'num':20},
-            {'label':'颜色：黑色，尺寸：37','symbol':'2,3','color':'黑色','size':'37','price':1289,'num':20},
-            {'label':'颜色：黑色，尺寸：38','symbol':'2,4','color':'黑色','size':'38','price':1290,'num':20}
-          	 
-          ]
-    },
-    {
-        id: 6,
-        name: '冰岛西兰花',
-        sort: 'Beats',
-        image: '../images/c6.jpg',
-        sales: 12000,
-        price: 1488,
-        color: '金色'
-    },
-    {
-        id: 7,
-        name: '广西玉林红萝卜',
-        sort: 'Beats',
-        image: '../images/c7.jpg',
-        sales: 25000,
-        price: 788,
-        color: '蓝色',mer_attr_price:[
-            
-            {'label':'颜色：红色，尺寸：36','symbol':'1,2','color':'红色','size':'36','price':1288,'num':20},
-            {'label':'颜色：红色，尺寸：37','symbol':'1,3','price':1289,'num':20},
-            {'label':'颜色：红色，尺寸：38','symbol':'1,4','price':1290,'num':20},
-            {'label':'颜色：黑色，尺寸：36','symbol':'2,2','price':1288,'num':20},
-            {'label':'颜色：黑色，尺寸：37','symbol':'2,3','price':1289,'num':20},
-            {'label':'颜色：黑色，尺寸：38','symbol':'2,4','price':1290,'num':20}
-          	 
-          ]
-        
-    },
-    {
-        id: 8,
-        name: '本土丝瓜',
-        sort: 'B&O',
-        image: '../images/c8.jpg',
-        sales: 15000,
-        price: 1898,
-        color: '金色'
-    },
-    {
-        id: 9,
-        name: '天然花菜',
-        sort: 'Bose',
-        image: '../images/c9.jpg',
-        sales: 14000,
-        price: 2878,
-        color: '蓝色',
-        mer_attr_price:[
-            
-            {'label':'颜色：红色，尺寸：36','symbol':'1,2','color':'红色','size':'36','price':1288,'num':20},
-            {'label':'颜色：红色，尺寸：37','symbol':'1,3','color':'红色','size':'37','price':1289,'num':20},
-            {'label':'颜色：红色，尺寸：38','symbol':'1,4','color':'红色','size':'38','price':1290,'num':20},
-            {'label':'颜色：黑色，尺寸：36','symbol':'2,2','color':'黑色','size':'36','price':1288,'num':20},
-            {'label':'颜色：黑色，尺寸：37','symbol':'2,3','color':'黑色','size':'37','price':1289,'num':20},
-            {'label':'颜色：黑色，尺寸：38','symbol':'2,4','color':'黑色','size':'38','price':1290,'num':20}
-          	 
-          ]
-    },
-    {
-        id: 10,
-        name: '田园三剑客',
-        sort: 'B&O',
-        image: '../images/c10.jpg',
-        sales: 9000,
-        price: 2298,
-        color: '金色'
-    }
-]
+				
+	{
+		"id":3335,"name":"ABCD","sort":"其他",
+		"image":"https://s3.cn-northwest-1.amazonaws.com.cn/hanniu/merchandise/mer_default.jpg",
+		"price":0.0,
+		"sales":1200,
+		"attrs":[
+			   {  "attr_key":"装箱","attr_key_en":"packaging",
+				
+			      "attr_values":[
+				     {"attr_id":3414,"attr_value":"3KG"},
+				     {"attr_id":3415,"attr_value":"5KG"},
+				     {"attr_id":3416,"attr_value":"9KG"}
+				   ]
+			   }
+			],
+			
+			"mer_attr_price":[
+				
+				{"mer_price_id":3417,"label":"","price":12.0,"num":100,"symbol":"3414"}
+				
+				]
+	
+	},
+	
+	
+	{"id":3420,"name":"增城菜心","sort":"其他","image":"https://s3.cn-northwest-1.amazonaws.com.cn/hanniu/merchandise/3333/thumb-1_20190428191734_069df8d7-4399-4205-9640-54272e7d0cba.jpg",
+		
+	"price":0.0,"sales":1200,
+	"attrs":[],
+	"mer_attr_price":[]
+	},
+	
+	{"id":3431,"name":"女士上衣","sort":"其他","image":"https://s3.cn-northwest-1.amazonaws.com.cn/hanniu/merchandise/3333/thumb-1_20190428192236_68973058-edd3-46b7-a648-1ac8c68d4cf4.jpg",
+		
+		"price":0.0,"sales":1200,
+		
+	"attrs":[
+		{"attr_key":"颜色","attr_key_en":"color",
+			
+		"attr_values":[
+			
+		    {"attr_id":3424,"attr_value":"紫色"},
+		    {"attr_id":3421,"attr_value":"红色"},
+		    {"attr_id":3422,"attr_value":"黄色"},
+		    {"attr_id":3423,"attr_value":"绿色"}
+		  ]
+		},
+		
+		{"attr_key":"大小型号","attr_key_en":"scale",
+			
+		"attr_values":[
+		    {"attr_id":3432,"attr_value":"S"},
+		    {"attr_id":3433,"attr_value":"M"},
+		    {"attr_id":3434,"attr_value":"L"},
+		    {"attr_id":3435,"attr_value":"XL"},
+		    {"attr_id":3436,"attr_value":"XXL"}
+		 ]
+		}
+	  ],
+	  
+	  "mer_attr_price":[
+		  
+		  {"mer_price_id":3437,"label":"","price":201.0,"num":0,"symbol":"3421,3432"},
+		  {"mer_price_id":3437,"label":"","price":201.0,"num":0,"symbol":"3421,3432"}
+		  ]
+	   }
+	
+	]
+
