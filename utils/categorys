@@ -5,8 +5,9 @@ export default
 	    {name:'农场亲子',no:2},
 		{name:'五月新品',no:3},
 		{name:'热带水果',no:5},
-		{name:'限时特卖',no:4}
-		
+		{name:'限时特卖',no:4},
+		{name:'新品预订',no:6},
+		{name:'换季清货',no:6}
 	]
 	
 

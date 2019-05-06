@@ -47,7 +47,7 @@
       <mt-tab-container-item id="主页">
               
               <!-- start of  mt-navbar -->
-              <mt-navbar v-model="category_selected">
+              <mt-navbar v-model="category_selected" style="overflow:scroll">
                  <mt-tab-item  v-for="category in categorys" :key="category.name" :id="category.name">
                    <h4 style="font-weight:bold;font-size:1.2em;"> {{ category.name }} </h4>
                  </mt-tab-item>
@@ -159,9 +159,9 @@ export default {
   components:{Product,Cart,MyDialog,My},
  
   computed:{
-     list2 () {
+     list_old () {
        
-        return this.fetchProductList();
+        return this.$store.state.productList;
      },
      
       menus (){
@@ -184,39 +184,7 @@ export default {
   },
   methods:{
     
-      testAjax(){
-     
-          var json={"province":"福建省"};
-		  var jsondata=JSON.stringify(json);
-          $.ajax({
-           type:"POST",
-           contentType: "application/json; charset=utf-8",
-           url:"http://www.dianliaome.com/citys", 
-           data:jsondata,
-           datatype: "json",
-           success: function (message) 
-		   {
-			   var resMsg=message.resMsg;
-			   var resCode=message.resCode;
-			  
-			   alert(resMsg);
-			   
-			   alert(message.result);
-			   
-              
-            },
-            
-            error: function (jqXHR, textStatus, errorThrown) 
-		    {
-               
-			     alert("--error="+jqXHR.readyState); 
-            }
-              
-         });
-       
-     
-     
-     },
+      
     
     fetchProductList(){
      
@@ -225,29 +193,24 @@ export default {
           $.ajax({
            type:"POST",
            contentType: "application/json; charset=utf-8",
-           url:"http://localhost/dian/sales/getproductlist", 
+           url:"http://www.dianliaome.com/sales/getproductlist/2059", 
            data:"{\"java\":\"OK\"}",
            datatype: "json",
            success: function (message) 
 		   {
-		       //alert(message);
 			   var resMsg=message.resMsg;
 			   var resCode=message.resCode;
-			  
-			    alert(message.items.length);
-			   
 			   message.items.forEach(t=>{
-			      alert(t);
-			      alert('--this.list='+__this.list);
 			      __this.list.push(t);
 			   });
-                alert("--3="+__this.list.length);
+                
+               localStorage.setItem("productList",JSON.stringify(__this.list));
             },
             
             error: function (jqXHR, textStatus, errorThrown) 
 		    {
                
-			     alert("--Http error="+jqXHR.readyState+","+errorThrown); 
+			     alert("貌似出了点问题，请稍后再试"); 
             }
             
             

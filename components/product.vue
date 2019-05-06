@@ -1,17 +1,18 @@
 <template>
-    <div class="product" :style="{width:screenWidth>600 ? '25%' : '50%'}">
+    <div class="product" :style="{width:screenWidth>600 ? '25%' : '50%',height:screenWidth>600 ? '25%' : '50%'}">
     
         <router-link :info="info" :to="'/detail/' + info.id" class="product-main">
-            <img  v-lazy="info.image">
-       
-            <h4>{{ info.name }}</h4>
             
+           <div class="image">
+            <img  :src="info.image" :width="width" :height="height" v-bind="getImage(280,280,info.image)">
+           </div>    
+            <h4>{{ info.name }}</h4>
             
             <div class="product-cost">¥ {{ info.price }}</div>
             <!--
             <h4><mt-button type="primary" size="small" style="cursor:pointer;" @click.prevent="goBuy(info.id)">去购买</mt-button></h4>
             -->
-             <h4><mt-button type="primary" size="small" style="cursor:pointer;" @click.prevent="addToCart(info.id,'')">去购买</mt-button></h4>
+             <div class="buy"><mt-button type="primary" size="small" style="cursor:pointer;" @click.prevent="addToCart(info.id,'')">去购买</mt-button></div>
            
             
        </router-link> 
@@ -21,7 +22,7 @@
 
 
 import { Toast,Button } from 'mint-ui';
-
+ 
     export default {
         props: {
             info: {id:1, name:'',price:0, image:'',symbol:'',label:'',num:0}
@@ -29,14 +30,16 @@ import { Toast,Button } from 'mint-ui';
         data () {
              return {
                 
-                  screenWidth: document.body.clientWidth
-                  
+                  screenWidth: document.body.clientWidth,
+                  width:260,
+                  height:260
             }
              
             
         },
         methods: {
-        
+               
+                
                 addToCart (idValue,symbolValue) {
                
                 var products=[];
@@ -44,15 +47,13 @@ import { Toast,Button } from 'mint-ui';
                 if(localStorage.getItem("productList")!=null){
             	   products= JSON.parse(localStorage.getItem("productList"));
                 }
-               // alert('---products='+products);
-                //商品的基础信息:
+                 
                 var product=products.find(item => item.id == idValue);
-                //alert('---product='+product);
+               
+                 console.log('<<<<product='+product);
                 //调用main.js 
                 //this.$store.commit('addCart', {id:idValue,symbol:symbolValue);
                  
-                //调用popup.vue组件中的this.$bus.on('resetPopShow',..)事件，组件间相互通讯。
-                //this.$bus.emit('resetPopShow',product);
                 //调用myDialog.vue组件中的this.$bus.on('resetPopShow',..)事件
                 this.$bus.emit('resetDialogShow',product);
                   
@@ -61,13 +62,46 @@ import { Toast,Button } from 'mint-ui';
             getScreenWidth(){
             
                var width=document.body.clientWidth;
-               //alert('screen width='+width);
+               
             },
             goBuy(idValue){
                
                  this.$router.push('/detail/'+idValue);
-            }
+            },
+            
+            getImage(maxWidth,maxHeight,src)
+            {
+               
+                var img = new Image();
+                img.src = src;
+                var hRatio;
+                var wRatio;
+                var Ratio = 1;
+                var w = img.width;
+                var h = img.height;
+                wRatio = maxWidth / w;
+                hRatio = maxHeight / h;
+              
+               if (maxWidth ==0 && maxHeight==0){
+                   Ratio = 1;
+               }else if (maxWidth==0){//
+                   if (hRatio<1) Ratio = hRatio;
+               }else if (maxHeight==0){  
+                   if (wRatio<1) Ratio = wRatio;
+                   }else if (wRatio<1 || hRatio<1){
+                    Ratio = (wRatio<=hRatio?wRatio:hRatio);
+                   }
+              if (Ratio<1){
+                w = w * Ratio;
+                h = h * Ratio;
+              }
+              this.width=w;
+              this.height=h;
+             
+           }
         }
+        
+        
         
        
     };
@@ -81,8 +115,8 @@ import { Toast,Button } from 'mint-ui';
     }
     .product-main{
         display: block;
-        margin: 5px;
-        padding: 5px;
+        margin: 3px;
+        padding:5px;
         border: 1px solid #dddee1;
         border-radius: 6px;
         overflow: hidden;
@@ -90,32 +124,35 @@ import { Toast,Button } from 'mint-ui';
         text-align: center;
         position: relative;
     }
-    .product-main img{
-        width: 100%;
+    .product-main .image{
+        max-width:280px;
+        max-height:280px;
+        overflow:hidden;
         cursor:pointer;
+        position: relative;
     }
     h4{
-     font-size: 14px;
+     font-size: 12px;
 	 color: #000;
-	 height:30px;
+	 height:20px;
 	 overflow:hidden;
+	 margin-top:2px;
+	 margin-bottom:2px;
         
+    }
+    .buy{
+      
+       height:30px;
+    
     }
     a { text-decoration:none; }
     .product-main:hover h4{
         color: #0070c9;
     }
-    .product-color{
-        display: block;
-        width: 16px;
-        height: 16px;
-        border: 1px solid #dddee1;
-        border-radius: 50%;
-        margin: 6px auto;
-    }
+    
     .product-cost{
         color: #de4037;
-        margin-top: 6px;
+        margin-top: 1px;
     }
     .product-add-cart{
         display: none;
@@ -132,5 +169,6 @@ import { Toast,Button } from 'mint-ui';
     .product-main:hover .product-add-cart{
         display: inline-block;
     }
+   
 
 </style>

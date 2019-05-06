@@ -20,24 +20,29 @@
          </div> <!-- end of product-content-main -->
          
          
-  <div v-for="(attr,index1) in product.attrs">
+         
+  <p>颜色</p>
   
-      <p>{{attr.attr_key}},{{index1}}</p>
-     
   <ul>
-  <li v-for="(item,index) in attr.attr_values" class="label" 
-   :class="{label_active: index1 == 0 ? selected1 == index : selected2 == index}"  @click="index1 == 0 ? chooseItem1(index):chooseItem2(index)" >
-      {{ item.attr_value }}  
-  </li> 
+  <li v-for="(item,index) in product.attrs" class="label" 
+   :class="{label_active: selected == index}"  @click="chooseItem(index)">
+      {{ item.attr_key }} 
+  </li>
   </ul>
-     
-     
-   <div class="clear"></div>
-      
-   
-  </div>
-          
+  <div class="clear"></div>
+  
+  <p>尺寸</p>
  
+  <ul>
+  <li v-for="(item,index) in sizes" class="label" 
+   :class="{label_active: selected2 == index}"  @click="chooseItem2(index)">
+      {{ item }} 
+  </li>
+  </ul>
+  
+  <div class="clear"></div>
+  
+  
    <div class="cart-content-main">
      <div class="cart-count">
          数量
@@ -94,11 +99,9 @@ export default {
         return{
             showMask: false,
             colors:["red","yellow","black"],
-            
-            selected1:-1,
-            selected2:-1,
+            selected:-1,
             sizes:["36","37","38"],
-            
+            selected2:-1 ,
             product:null
         }
     },
@@ -118,12 +121,12 @@ export default {
             //this.$emit('confirm');
             this.closeMask();
         },
-        chooseItem1(index){
+        chooseItem(index){
         
-         this.selected1=index;
+         this.selected=index;
       },
       chooseItem2(index){
-        
+         
          this.selected2=index;
       },
       sayHello(){
@@ -136,7 +139,7 @@ export default {
        
     },
      created(){
-     //组件传值:resetDialogShow is event from product.vue $emit 
+     //resetDialogShow is event from product.vue $emit 
      this.$bus.on('resetDialogShow', (val) => {
          
           this.showMask=true;
