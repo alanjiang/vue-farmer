@@ -22,11 +22,11 @@
          
   <div v-for="(attr,index1) in product.attrs">
   
-      <p>{{attr.attr_key}},{{index1}}</p>
+      <p class="title">{{attr.attr_key}}</p>
      
   <ul>
   <li v-for="(item,index) in attr.attr_values" class="label" 
-   :class="{label_active: index1 == 0 ? selected1 == index : selected2 == index}"  @click="index1 == 0 ? chooseItem1(index):chooseItem2(index)" >
+   :class="{label_active: index1 == 0 ? selected1 == index : selected2 == index}"  @click="index1 == 0 ? chooseItem1(index,item.attr_id):chooseItem2(index,item.attr_id)" >
       {{ item.attr_value }}  
   </li> 
   </ul>
@@ -41,11 +41,11 @@
    <div class="cart-content-main">
      <div class="cart-count">
          数量
-                    <span class="cart-control-minus">-</span>
-                    1
-                    <span class="cart-control-add">+</span>
+                    <span class="cart-control-minus" @click="subNum()">-</span>
+                    <font color="red">{{count}}</font>
+                    <span class="cart-control-add" @click="addNum()">+</span>
       </div>
-       <div class="cart-price">单价: 12.50 &nbsp; 总价:25.00 </div>
+       <div class="cart-price">单价: {{product.price}}  &nbsp; 总价:{{total_price }} </div>
    </div>
  
   
@@ -93,16 +93,27 @@ export default {
     data(){
         return{
             showMask: false,
-            colors:["red","yellow","black"],
-            
             selected1:-1,
             selected2:-1,
-            sizes:["36","37","38"],
-            
+            attr_id1:null,
+            attr_id2:null,
+            count:1,
+            price:0,
+            total_price:0,
             product:null
         }
     },
     methods:{
+    
+        addNum(){
+           this.count++;
+        },
+        subNum(){
+          if(this.count==1){
+            return;
+          }
+          this.count--;
+        },
         closeMask(){
             this.showMask = false;
         },
@@ -118,13 +129,37 @@ export default {
             //this.$emit('confirm');
             this.closeMask();
         },
-        chooseItem1(index){
         
-         this.selected1=index;
-      },
-      chooseItem2(index){
+        //选取规格，及时调整单价、总价和库存,规格一维点击了
+        chooseItem1(index,attr_id){
+           this.attr_id1=attr_id;
+           alert('attr_id='+this.attr_id1);
+           this.selected1=index;
+           
+          if(this.product.attrs.length == 1){
+              
+              
+          } 
         
+        },
+        
+        //规格二维点击了
+        chooseItem2(index,attr_id){
+         this.attr_id2=attr_id;
+         alert('attr_id='+this.attr_id2);
          this.selected2=index;
+         var target=this.product.mer_attr_price.find(item=> {
+             var s1=this.attr_id1+','+this.attr_id2;
+             var s2=this.attr_id2+','+this.attr_id1;
+             alert('-s1='+s1+',s2='+s2+',symbol='+item.symbol);
+             if( s1 === item.symbol  || s2 === item.symbol){
+                  alert('--get it!');
+                  return true;
+             }
+           
+         });
+         
+         alert('--get it='+target.symbol);
       },
       sayHello(){
       
@@ -132,6 +167,9 @@ export default {
       
       }
     },
+    
+
+    
     mounted(){
        
     },
@@ -141,6 +179,7 @@ export default {
          
           this.showMask=true;
           this.product=val;
+          this.price=product.price;
           console.log("myDialog>>>>>product="+this.product.image);
          
      });
@@ -267,11 +306,20 @@ export default {
     
     
     
- p
+p
 {
  color:#000;
- height:25px;
+ height:20px;
  
+}
+.title{
+  
+  text-align:left;
+  
+  font-size:12px;
+  
+  
+
 }
 ul{
   padding:2px 2px;
@@ -285,9 +333,16 @@ li {
    float:left;
    list-style:none;
    margin:1px 1px;
+   
+   font-size:12px;
+   
+   cursor:pointer;
 
 }
 
+li:hover{
+   border:1px solid red;
+}
  .label{
     
     border-radius:8px;
@@ -374,6 +429,7 @@ li {
         overflow:hidden;
         text-align:left;
         color:#4A4A4A;
+        font-size:12px;
     }
     
    

@@ -1,190 +1,102 @@
 export default [
-				
-	{
-		"id":3335,"name":"ABCD","sort":"其他",
-		"image":"../images/c1.jpg",
-		"price":12.0,
-		"sales":1200,
+	
+	
+	{"id":4213,"name":"密汁鸡腿饭","sort":"中餐","image":"https://s3.cn-northwest-1.amazonaws.com.cn/hanniu/merchandise/2059/thumb-63_20190506104828_2a15cd1e-0b55-420a-bf30-f92fe77c0f7e.jpg","price":21.0,"sales":1200,
+		
+		
 		"attrs":[
-			   {  "attr_key":"装箱","attr_key_en":"packaging",
+
+			{"attr_key":"汤","attr_key_en":"soup",
 				
-			      "attr_values":[
-				     {"attr_id":3414,"attr_value":"3KG"},
-				     {"attr_id":3415,"attr_value":"5KG"},
-				     {"attr_id":3416,"attr_value":"9KG"}
-				   ]
-			   }
-			],
-			
-			"mer_attr_price":[
-				
-				{"mer_price_id":3417,"label":"","price":12.0,"num":100,"symbol":"3414"}
-				
-				]
-	
-	},
-	
-	
-	{"id":3420,"name":"潮流女装","sort":"其他",
-		"image":"../images/cloth03.jpg",
-		
-	"price":39.0,"sales":1200,
-	"attrs":[],
-	"mer_attr_price":[]
-	},
-	
-	{"id":3431,"name":"女士上衣","sort":"其他",
-		
-		"image":"../images/c3.jpg",
-		"price":176.0,"sales":1200,
-		
-	"attrs":[
-		{"attr_key":"颜色","attr_key_en":"color",
-			
-		"attr_values":[
-			
-		    {"attr_id":3424,"attr_value":"紫色"},
-		    {"attr_id":3421,"attr_value":"红色"},
-		    {"attr_id":3422,"attr_value":"黄色"},
-		    {"attr_id":3423,"attr_value":"绿色"}
-		  ]
-		},
-		
-		{"attr_key":"大小型号","attr_key_en":"scale",
-			
-		"attr_values":[
-		    {"attr_id":3432,"attr_value":"S"},
-		    {"attr_id":3433,"attr_value":"M"},
-		    {"attr_id":3434,"attr_value":"L"},
-		    {"attr_id":3435,"attr_value":"XL"},
-		    {"attr_id":3436,"attr_value":"XXL"}
-		 ]
-		}
-	  ],
-	  
-	  "mer_attr_price":[
-		  
-		  {"mer_price_id":3437,"label":"","price":201.0,"num":0,"symbol":"3421,3432"},
-		  {"mer_price_id":3437,"label":"","price":201.0,"num":0,"symbol":"3421,3432"}
-		  ]
-	   },
-	   
-	   {"id":3432,"name":"女士上衣","sort":"其他",
-			
-			"image":"../images/c4.jpg",
-			"price":145.0,"sales":1200,
-			
-		"attrs":[
-			{"attr_key":"颜色","attr_key_en":"color",
-				
-			"attr_values":[
-				
-			    {"attr_id":3424,"attr_value":"紫色"},
-			    {"attr_id":3421,"attr_value":"红色"},
-			    {"attr_id":3422,"attr_value":"黄色"},
-			    {"attr_id":3423,"attr_value":"绿色"}
-			  ]
+				"attr_values":[
+					
+					{"attr_id":4209,"attr_value":"乌鸡汤"},
+					{"attr_id":4210,"attr_value":"老火靓汤"},
+					{"attr_id":4211,"attr_value":"排骨汤"}
+					]
 			},
 			
-			{"attr_key":"大小型号","attr_key_en":"scale",
+			{"attr_key":"份量","attr_key_en":"share",
 				
-			"attr_values":[
-			    {"attr_id":3432,"attr_value":"S"},
-			    {"attr_id":3433,"attr_value":"M"},
-			    {"attr_id":3434,"attr_value":"L"},
-			    {"attr_id":3435,"attr_value":"XL"},
-			    {"attr_id":3436,"attr_value":"XXL"}
-			 ]
-			}
-		  ],
-		  
-		  "mer_attr_price":[
-			  
-			  {"mer_price_id":3437,"label":"","price":201.0,"num":0,"symbol":"3421,3432"},
-			  {"mer_price_id":3437,"label":"","price":201.0,"num":0,"symbol":"3421,3432"}
-			  ]
-		   },
-		   
-		   
-		   {"id":3433,"name":"空心菜","sort":"其他",
-				
-				"image":"../images/c4.jpg",
-				"price":176.0,"sales":1200,
-				
-			"attrs":[
-				{"attr_key":"颜色","attr_key_en":"color",
-					
 				"attr_values":[
+					{"attr_id":4178,"attr_value":"大份"},
+					{"attr_id":4179,"attr_value":"中份"},
+					{"attr_id":4180,"attr_value":"小份 "}
+					]
+			}
+			
+		],
+		
+		
+		
+		"mer_attr_price":
+			[
+				
+				{  "mer_price_id":4214,"label":"","price":25.0,"num":100,"symbol":"4209,4178",
 					
-				    {"attr_id":3424,"attr_value":"紫色"},
-				    {"attr_id":3421,"attr_value":"红色"},
-				    {"attr_id":3422,"attr_value":"黄色"},
-				    {"attr_id":3423,"attr_value":"绿色"}
-				  ]
+					"items":[
+						{"id":4209,"attr_key":"汤","attr_key_en":"soup","attr_value":"乌鸡汤","no":0,"adminid":63},
+						{"id":4178,"attr_key":"份量","attr_key_en":"share","attr_value":"大份","no":0,"adminid":63}
+						]
 				},
 				
-				{"attr_key":"大小型号","attr_key_en":"scale",
-					
-				"attr_values":[
-				    {"attr_id":3432,"attr_value":"S"},
-				    {"attr_id":3433,"attr_value":"M"},
-				    {"attr_id":3434,"attr_value":"L"},
-				    {"attr_id":3435,"attr_value":"XL"},
-				    {"attr_id":3436,"attr_value":"XXL"}
-				 ]
-				}
-			  ],
-			  
-			  "mer_attr_price":[
-				  
-				  {"mer_price_id":3437,"label":"","price":201.0,"num":0,"symbol":"3421,3432"},
-				  {"mer_price_id":3437,"label":"","price":201.0,"num":0,"symbol":"3421,3432"}
-				  ]
-			   },
-			   
-			   
-			   
-			   {"id":3434,"name":"蕃茄","sort":"其他",
-					
-					"image":"../images/c6.jpg",
-					"price":176.0,"sales":1200,
-					
-				"attrs":[
-					{"attr_key":"颜色","attr_key_en":"color",
+				{"mer_price_id":4215,"label":"","price":20.0,"num":100,"symbol":"4209,4179",
+					"items":[
+						{"id":4209,"attr_key":"汤","attr_key_en":"soup","attr_value":"乌鸡汤","no":0,"adminid":63},
+						{"id":4179,"attr_key":"份量","attr_key_en":"share","attr_value":"中份","no":0,"adminid":63}
 						
-					"attr_values":[
-						
-					    {"attr_id":3424,"attr_value":"紫色"},
-					    {"attr_id":3421,"attr_value":"红色"},
-					    {"attr_id":3422,"attr_value":"黄色"},
-					    {"attr_id":3423,"attr_value":"绿色"}
-					  ]
-					},
-					
-					{"attr_key":"大小型号","attr_key_en":"scale",
-						
-					"attr_values":[
-					    {"attr_id":3432,"attr_value":"S"},
-					    {"attr_id":3433,"attr_value":"M"},
-					    {"attr_id":3434,"attr_value":"L"},
-					    {"attr_id":3435,"attr_value":"XL"},
-					    {"attr_id":3436,"attr_value":"XXL"}
-					 ]
-					}
-				  ],
-				  
-				  "mer_attr_price":[
-					  
-					  {"mer_price_id":3437,"label":"","price":201.0,"num":0,"symbol":"3421,3432"},
-					  {"mer_price_id":3437,"label":"","price":201.0,"num":0,"symbol":"3421,3432"}
-					  ]
-				   }
+						]
+				},
 				
-			
-		
-	   
-	   
-	   
+				{"mer_price_id":4216,"label":"","price":16.0,"num":100,"symbol":"4209,4180",
+					"items":[
+						{"id":4209,"attr_key":"汤","attr_key_en":"soup","attr_value":"乌鸡汤","no":0,"adminid":63},
+						{"id":4180,"attr_key":"份量","attr_key_en":"share","attr_value":"小份 ","no":0,"adminid":63}
+						]
+				},
+				{"mer_price_id":4217,"label":"","price":25.0,"num":100,"symbol":"4210,4178",
+					"items":[
+						{"id":4210,"attr_key":"汤","attr_key_en":"soup","attr_value":"老火靓汤","no":0,"adminid":63},
+						{"id":4178,"attr_key":"份量","attr_key_en":"share","attr_value":"大份","no":0,"adminid":63}
+						]
+				},
+				
+				{"mer_price_id":4218,"label":"","price":20.0,"num":100,"symbol":"4210,4179",
+					"items":[
+						{"id":4210,"attr_key":"汤","attr_key_en":"soup","attr_value":"老火靓汤","no":0,"adminid":63},
+						{"id":4179,"attr_key":"份量","attr_key_en":"share","attr_value":"中份","no":0,"adminid":63}
+						]
+				},
+				
+				{"mer_price_id":4219,"label":"","price":16.0,"num":100,"symbol":"4210,4180",
+					"items":[
+						{"id":4210,"attr_key":"汤","attr_key_en":"soup","attr_value":"老火靓汤","no":0,"adminid":63},
+						{"id":4180,"attr_key":"份量","attr_key_en":"share","attr_value":"小份 ","no":0,"adminid":63}
+						]
+				},
+				
+				{"mer_price_id":4220,"label":"","price":25.0,"num":100,"symbol":"4211,4178",
+					"items":[
+						{"id":4211,"attr_key":"汤","attr_key_en":"soup","attr_value":"排骨汤","no":0,"adminid":63},
+						{"id":4178,"attr_key":"份量","attr_key_en":"share","attr_value":"大份","no":0,"adminid":63}
+						]
+				},
+				
+				{"mer_price_id":4221,"label":"","price":20.0,"num":100,"symbol":"4211,4179",
+					"items":[
+						{"id":4211,"attr_key":"汤","attr_key_en":"soup","attr_value":"排骨汤","no":0,"adminid":63},
+						{"id":4179,"attr_key":"份量","attr_key_en":"share","attr_value":"中份","no":0,"adminid":63}
+						]
+				},
+				
+				{"mer_price_id":4222,"label":"","price":16.0,"num":100,"symbol":"4211,4180",
+					"items":[
+						  {"id":4211,"attr_key":"汤","attr_key_en":"soup","attr_value":"排骨汤","no":0,"adminid":63},
+						 {"id":4180,"attr_key":"份量","attr_key_en":"share","attr_value":"小份 ","no":0,"adminid":63}
+						]
+				}
+		  ]
 	
-	]
-
+	}
+	
+]

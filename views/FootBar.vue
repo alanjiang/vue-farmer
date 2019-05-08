@@ -203,7 +203,7 @@ export default {
 			   message.items.forEach(t=>{
 			      __this.list.push(t);
 			   });
-                
+               console.log(JSON.stringify(__this.list));
                localStorage.setItem("productList",JSON.stringify(__this.list));
             },
             
