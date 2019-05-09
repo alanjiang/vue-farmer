@@ -5,7 +5,6 @@
             <div class="cart-header-title">购物清单</div>
             <div class="cart-header-main">
                 <div class="cart-info">商品信息</div>
-               
                 <div class="cart-price">单价</div>
                 <div class="cart-count">数量</div>
                 <div class="cart-cost">小计</div>
@@ -20,7 +19,7 @@
                 </div>
                 
                 
-                <div class="cart-price">¥ {{ item.price }}</div>
+                <div class="cart-price">¥ {{ item.price }},{{ item.symbol}}</div>
                 <div class="cart-count">
                     <span class="cart-control-minus" @click="subMer(item.id,item.symbol)">-</span>
                     {{ item.count }}
@@ -31,7 +30,9 @@
                     <span class="cart-control-delete" @click="delMer(item.id,item.symbol)">删除</span>
                 </div>
                 
-                <div class="cart-extend">{{ item.name }} &nbsp;规格：{{ item.label}}</div>
+                <div class="cart-extend">{{ item.name }} &nbsp;{{ item.label}}</div>
+                
+            
             </div>
             <div class="cart-empty" v-if="cartList.length == 0">
             
@@ -69,24 +70,13 @@
             return {
                
                 promotionCode: '',
-                promotion: 0
+                promotion: 0,
+               
+                cartList: this.calCartList ()
+                
             }
         },
         computed: {
-            cartList () {
-                
-                if(this.$store.state.cartList.length > 0){
-                   
-                   return this.$store.state.cartList;
-                }
-                if(localStorage.getItem("cartList")!=null){
-                  
-                  return JSON.parse(localStorage.getItem("cartList"));
-                }
-                  return [];
-                
-            },
-            
             countAll () {
                 let count = 0;
                 this.cartList.forEach(item => {
@@ -104,10 +94,18 @@
         },
        
         methods: {
-          
+               calCartList () {
+                
+                 if(localStorage.getItem("cartList")!=null){
+                  
+                   return JSON.parse(localStorage.getItem("cartList"));
+                }
+                  return [];
+                
+              },
             //调用 main.js中mutations 中的方法，传实参
-             subMer(idValue, symbolValue) {
-                 alert('---'+idValue+','+symbolValue);
+                subMer(idValue, symbolValue) {
+                 
                 this.cartList.find(item => { 
                      if(idValue == item.id && symbolValue == item.symbol){
                          item.count=item.count-1;
@@ -116,13 +114,14 @@
                          }
                          
                           this.$store.commit('editCartCount',item);
+                          
                      }
                 });
-                
+                this.resetCartList();
             },
             addMer (idValue, symbolValue) {
             
-                
+ 
                 this.cartList.find(item => { 
                      if(idValue == item.id && symbolValue == item.symbol)
                      {
@@ -134,13 +133,18 @@
                               });
                             item.count=item.num;
                           }
-                         this.$store.commit('editCartCount',{id:item.id,symbole:item.symbol,count:item.count});
+                          
+                          
+                         this.$store.commit('editCartCount',{id:item.id,symbol:item.symbol,count:item.count});
+                         this.resetCartList();
                       }
                 });
                 
             },
             delMer (idValue,symbolValue) {
+                
                 this.$store.commit('deleteCart', {id:idValue,symbol:symbolValue});
+                 this.resetCartList();
             },
             handleCheckCode () {
                 if (this.promotionCode === '') {
@@ -153,12 +157,38 @@
                     this.promotion = 500;
                 }
             },
+            
+            resetCartList(){
+              alert('--state.cartList.length='+this.$store.state.cartList.length);
+              if(this.$store.state.cartList.length>0) this.$store.state.cartList=state.cartList;
+              this.cartList=JSON.parse(localStorage.getItem("cartList"));
+            
+            },
+            
             handleOrder () {
                 this.$store.dispatch('buy').then(() => {
                     window.alert('购买成功');
                 })
             }
-        }
+        },
+        
+        mounted(){
+        
+           this.calCartList ();
+        },
+        
+         created(){
+              // 监听来自myDialog.vue中加入购物车动作事件，由$emit发出 
+             this.$bus.on('cartChange', (val) => {
+               //让购物车中的商品及时更新
+              this.cartList=JSON.parse(localStorage.getItem("cartList"));
+                
+             });
+       
+       }
+        
+        
+        
     }
 </script>
 <style scoped>

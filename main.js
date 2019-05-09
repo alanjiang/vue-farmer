@@ -147,142 +147,124 @@ const mutations = {
 	},
 	// 添加到购物车,detail.vue中调用
     addCart (state, params) {
-		
-		var cars=[];
-		//alert('--state.cartList='+state.cartList.length);
-		if(state.cartList.length>0){
-			cars=state.cartList;
-		}else{
-			cars=JSON.parse(localStorage.getItem("cartList"));
-			
-		}
-		
+	
+		var cars=JSON.parse(localStorage.getItem("cartList"));
+	
 		if(cars==null){
 			cars=[];
 		}
-		//alert('--cartList='+cars.length);
+		
 		var id=params.id;
 		var symbol=params.symbol;
-        // 先判断购物车是否已有，如果有，数量+1, id+symbol必须相同
+		var count=params.count;
         var products=[];
-        //alert('---state.productList.length='+state.productList.length);
-        if(state.productList.length>0){
-            	products= state.productList;
-        }
         if(localStorage.getItem("productList")!=null){
             	products= JSON.parse(localStorage.getItem("productList"));
         }
         
         if(products==null){
-        	alert('--Data Wrong---') ;
+        	alert('请升级您的浏览器')
         	return;
         }
            //提取商品的基础信息
         var obj=products.find(item => item.id == id);
             
-        if(!obj) { alert('--Data Wrong---') ;}
-            
-                
-        if(cars.length == 0){ //购物车是空的
-    	    	
-    	    	
-    	    	obj.count=1;
+        if(!obj) { alert('未找到对应的商品，您需要的商品可能已经下架') ;}    
+        //1,购物车是空的
+        
+        if(cars.length == 0)
+        { 
+    	    	obj.count=count;
     	    	obj.symbol=symbol;
     	    	var mer= obj.mer_attr_price.find(mar=> mar.symbol == symbol);
-    	    	
     	    	if(mer){
     	    		obj.label=mer.label;
     	    		obj.price=mer.price;
     	    		obj.num=mer.num;
+    	    		
     	    	}
-    	    	cars.push(obj);
-    	    	
-    	    	state.cartList=cars;
+    	    	cars.push(obj);  
     	    	localStorage.setItem("cartList",JSON.stringify(cars));
-    	        
-    	        
+    	    	
+    	    	return;
     	        
     	    }
          
-       
-           var cart_item= cars.find(item => item.id == obj.id && item.symbol == symbol );
-         
-       
-          if(cart_item){//重复
+         //2, 购物车不是空的
+         var cart_item= cars.find(item => item.id == obj.id && item.symbol == symbol );
+         //2.1 商品重复,ID+symbol
+         if(cart_item)
+         {
         	  cars.find(item=>{
         		  
         	   
            	   if(item.id == obj.id && item.symbol == symbol ){
            		 
-           		   item.count=item.count+1;
-           		   
+           		   item.count=item.count+count;
+           		   localStorage.setItem("cartList",JSON.stringify(cars));
+           		  
            	   }
            	  
              });
-          }else{//新增
+          }else //2.2 新增商品
+          {
             obj.symbol=symbol;
-            obj.count=1;
-            			 
-            if(obj.mer_attr_price){
-            	var mer= obj.mer_attr_price.find(mar=> mar.symbol === symbol);
-            	if(mer){
+            obj.count=count;
+            //2.2.1 商品有规格，多种价格 			 
+            if(obj.mer_attr_price)
+            {
+            	 var mer= obj.mer_attr_price.find(mar=> mar.symbol === symbol);
+            	 if(mer)
+            	  {
                   obj.label=mer.label;
                   obj.price=mer.price;
                   obj.num=mer.num;
-                }
-            }else{
-            	obj.label='';
-            }
+                 }
+             }else//2.2.2 商品没有规格
+             { 	
+            	   obj.label='';
+             }
             
-            cars.push(obj);		 
-            			 
-          }
-        state.cartList=cars;
-        localStorage.setItem("cartList",JSON.stringify(cars));
+                cars.push(obj);		 
+                localStorage.setItem("cartList",JSON.stringify(cars));	
+              
+       }
+        
+        
         
       } ,//end of addToCart 
     
     // 修改商品数量
     editCartCount (state, payload) {
     	
-    	var cars=[];
-		
-		if(state.cartList.length>0){
-			cars=state.cartList;
-		}else{
-			cars=JSON.parse(localStorage.getItem("cartList"));
-		}
-		
-        const product = cars.find(item => {
-        
+    	  
+    	var cars=JSON.parse(localStorage.getItem("cartList"));
+        cars.find(item => {
         	 if(item.id == payload.id && item.symbol == payload.symbol){
-        		item.count=payload.count;
-        		 
+        		item.count=payload.count; 
         	}
         });
-        state.cartList=cars;
-        localStorage.setItem("cartList",JSON.stringify(state.cartList));
+        
+        localStorage.setItem("cartList",JSON.stringify(cars));
+      
+        
     },
     // 删除商品
     deleteCart (state, params ) {
     	var id=params.id;
 		var symbol=params.symbol;
-        var cars=[];
-		if(state.cartList.length>0){
-			cars=state.cartList;
-		}else{
-			cars=JSON.parse(localStorage.getItem("cartList"));
-		}
-		
+        var cars=JSON.parse(localStorage.getItem("cartList"));
         const index = cars.findIndex(item => (item.id === id && item.symbol === symbol ));
         cars.splice(index, 1);
-        state.cartList=cars;
-        localStorage.setItem("cartList",JSON.stringify(state.cartList));
+        
+        localStorage.setItem("cartList",JSON.stringify(cars));
+        
     },
     // 清空购物车
     emptyCart (state) {
-        state.cartList = [];
-        localStorage.setItem("cartList",JSON.stringify(state.cartList));
+        cartList = [];
+        localStorage.setItem("cartList",JSON.stringify(cartList));
+       
     }
 	
 	

@@ -13,8 +13,9 @@
             
             <div class="product-info">
                    <p>{{product.name}}</p>
-                   <p>{{product.price}}</p>
-                   <p>库存：2300</p>
+                   <p style="size:16px;color:red;" v-if="price_span == null">¥{{this.price}}</p>
+                   <p style="size:16px;color:red;" v-else>¥{{price_span}}</p>
+                   <p v-show="remain !=null">库存：{{remain}}</p>
             </div>
             
          </div> <!-- end of product-content-main -->
@@ -45,7 +46,7 @@
                     <font color="red">{{count}}</font>
                     <span class="cart-control-add" @click="addNum()">+</span>
       </div>
-       <div class="cart-price">单价: {{product.price}}  &nbsp; 总价:{{total_price }} </div>
+       <div class="cart-price">单价: <font color="red">¥{{this.price}}</font>  &nbsp; 总价:<font color="red">¥{{total_price  }}</font> </div>
    </div>
  
   
@@ -68,7 +69,7 @@
                     不买了
                 </div>
                 
-                <div  class="confirm-btn" @click="confirmBtn">
+                <div  class="confirm-btn" @click="addToCart()">
                     加入购物车
                 </div>
  </div>
@@ -82,7 +83,7 @@
 </template>
 <script>
 
-
+import { Toast } from 'mint-ui';
 export default {
   name:'MyDialog',
      
@@ -100,19 +101,41 @@ export default {
             count:1,
             price:0,
             total_price:0,
-            product:null
+            remain:null,
+            product:null,
+            symbol:'',
+            price_span:null,
         }
     },
     methods:{
-    
+        getTotalPrice(){
+        
+           return  this.count*this.price;
+        },
         addNum(){
+        
+           if(!this.judgeAttrComplete()){
+            return;
+           }
+           if(this.remain !=null ){
+              if(this.count >= this.remain){
+                 this.count==this.remain;
+              }
+           }
            this.count++;
+           this.total_price=this.price*this.count;
+           
         },
         subNum(){
+          
           if(this.count==1){
             return;
           }
+          if(!this.judgeAttrComplete()){
+            return;
+          }
           this.count--;
+          this.total_price=this.price*this.count;
         },
         closeMask(){
             this.showMask = false;
@@ -125,41 +148,106 @@ export default {
             //this.$emit('danger');
             this.closeMask();
         },
-        confirmBtn(){
-            //this.$emit('confirm');
-            this.closeMask();
-        },
         
+        judgeAttrComplete(){
+             if(this.product.attrs.length == 2 ){
+               if(this.attr_id1 ==null  || this.attr_id2 == null){
+                alert('规格没有全面选择');
+                return false;
+               }
+            }
+            if(this.product.attrs.length == 1){
+                if(this.attr_id1 ==null){
+                 alert('规格没有选择');
+                return false;
+               }
+            }
+            return true;
+        },
+        addToCart(){
+            
+            
+             if(!this.judgeAttrComplete()){
+                return;
+             }
+             
+             //alert('---addToCart=>'+this.symbol);
+             var params={'id':this.product.id,'symbol':this.symbol,'count':this.count};
+             
+            // alert('-params='+ params.id+','+params.symbol+','+params.count); 
+             //调用main.js中的函数
+             this.$store.commit('addCart', params);
+            
+             //调用cart.vue组件中的this.$bus.on('cartChage',..)事件
+             this.$bus.emit('cartChange',params);
+            
+             this.closeMask();
+          
+        },
+        //规格有二维时，点击不分先后
         //选取规格，及时调整单价、总价和库存,规格一维点击了
         chooseItem1(index,attr_id){
            this.attr_id1=attr_id;
-           alert('attr_id='+this.attr_id1);
            this.selected1=index;
            
-          if(this.product.attrs.length == 1){
-              
+          if(this.product.attrs.length == 2){
+             if(this.attr_id != null ){
+                 var target=this.product.mer_attr_price.find(item=> {
+                 var s1=this.attr_id1+','+this.attr_id2;
+                 var s2=this.attr_id2+','+this.attr_id1;
+                 if( s1 == item.symbol  || s2 == item.symbol){
+                     return true;
+                  }});
+                  if(target != null){
+                     this.price=target.price;
+                     this.remain=target.num;
+                     this.symbol=target.symbol;
+                 }
+             }
+             
               
           } 
+          if(this.product.attrs.length == 1){
+              
+             
+             var target=this.product.mer_attr_price.find(item=> {
+            
+               if( attr_id == item.symbol ){
+                  return true;
+                }
+            });
+             
+             if(target != null){
+                  this.price=target.price;
+                  this.remain=target.num;
+                  this.symbol=target.symbol;
+             }
+             
+             
+          } 
+          
+           this.total_price=this.price*this.count;
         
         },
         
         //规格二维点击了
-        chooseItem2(index,attr_id){
+        chooseItem2(index,attr_id){ 
          this.attr_id2=attr_id;
-         alert('attr_id='+this.attr_id2);
          this.selected2=index;
+         if(this.attr_id1 == null ) return;
          var target=this.product.mer_attr_price.find(item=> {
              var s1=this.attr_id1+','+this.attr_id2;
              var s2=this.attr_id2+','+this.attr_id1;
-             alert('-s1='+s1+',s2='+s2+',symbol='+item.symbol);
-             if( s1 === item.symbol  || s2 === item.symbol){
-                  alert('--get it!');
+             if( s1 == item.symbol  || s2 == item.symbol){
+                 
                   return true;
-             }
-           
-         });
-         
-         alert('--get it='+target.symbol);
+             }});
+        if(target !=null ){
+           this.price=target.price;
+           this.remain=target.num;
+           this.symbol=target.symbol;
+         }  
+        
       },
       sayHello(){
       
@@ -172,6 +260,7 @@ export default {
     
     mounted(){
        
+       
     },
      created(){
      //组件传值:resetDialogShow is event from product.vue $emit 
@@ -179,8 +268,40 @@ export default {
          
           this.showMask=true;
           this.product=val;
-          this.price=product.price;
-          console.log("myDialog>>>>>product="+this.product.image);
+          this.price=this.product.price;
+          this.total_price=this.product.price*this.count;
+          this.count=1;
+          this.price_span=null;
+          this.attr_id1=null;
+          this.attr_id2=null;
+          this.selected1=-1;
+          this.selected2=-1;
+          
+          if(val.mer_attr_price.length >0 ){
+                if(val.mer_attr_price.length==1) return;
+                val.mer_attr_price.sort(function(a,b){
+                   if(a['price']<b['price']){
+                       return -1;
+                   }
+                   if(a['price']>b['price']){
+                    return 1;
+                  }
+                  return 0;
+               });
+               if(val.mer_attr_price[0]['price'] == val.mer_attr_price[val.mer_attr_price.length-1]['price']){
+                  this.price_span=val.mer_attr_price[0]['price'];
+               }else{
+                 this.price_span=val.mer_attr_price[0]['price']+'-'+val.mer_attr_price[val.mer_attr_price.length-1]['price'];
+               }
+               
+               
+          }else{
+          
+             this.price=val.price;
+             this.price_span=null;
+             
+          }
+          
          
      });
   
@@ -188,8 +309,9 @@ export default {
     
     
     watch:{
-       showMask(newVal, oldVal){
+       total_price(newVal, oldVal){
             
+            //alert(newVal+","-oldVal);
         }
     }
 }
