@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import App from './app.vue';
 import Vuex from 'vuex';
-import Axios from 'axios';
+import axios from 'axios';
 
 import product_data from './utils/product.js';
 
@@ -12,7 +12,11 @@ import Mint from 'mint-ui';
 import 'mint-ui/lib/style.css'; 
 import VueBus from 'vue-bus';
 
+import VDistpicker from 'v-distpicker';
 
+
+
+Vue.component('v-distpicker', VDistpicker);
 
 
 Vue.use(Vuex);
@@ -20,12 +24,15 @@ Vue.use(VueRouter);
 Vue.use(Mint);
 Vue.use(VueBus);
 
+Vue.prototype.$http = axios;
+
+import {Toast } from 'mint-ui';
 // 路由配置
 const Routers = [
 	 {
-	        path: '/index',
+	        path: '/index_prod.html',
 	        meta: {
-	            title: 'Foot Bar'
+	            title: '智慧农场'
 	        },
 	        component: (resolve) => require(['./views/FootBar.vue'], resolve)
 	 },
@@ -92,7 +99,7 @@ const Routers = [
     
     {
         path: '*',
-        redirect: '/index'
+        redirect: '/index_prod.html'
     }
 ];
 const RouterConfig = {
@@ -127,9 +134,9 @@ const mutations = {
 	},
 	setProductList(state,data) {
 		
-		console.log('--productData='+data);
-		state.productList=data;
 		
+		state.productList=data;
+		console.log('--datas='+JSON.stringify(data));
 		localStorage.setItem("productList",JSON.stringify(data));
 	},
 	
@@ -181,14 +188,22 @@ const mutations = {
     	    		obj.label=mer.label;
     	    		obj.price=mer.price;
     	    		obj.num=mer.num;
-    	    		
+    	    	}else
+    	    	{
+    	    		obj.label='';
     	    	}
+    	    	
     	    	cars.push(obj);  
     	    	localStorage.setItem("cartList",JSON.stringify(cars));
+    	    	Toast({
+  	    		  message: '成功加入购物车',
+  	    		  position: 'middle',
+  	    		  duration: 500
+  	    	     });
     	    	
     	    	return;
     	        
-    	    }
+    	}
          
          //2, 购物车不是空的
          var cart_item= cars.find(item => item.id == obj.id && item.symbol == symbol );
@@ -230,7 +245,11 @@ const mutations = {
               
        }
         
-        
+         Toast({
+	    		  message: '成功加入购物车',
+	    		  position: 'middle',
+	    		  duration: 5000
+	    	  });
         
       } ,//end of addToCart 
     

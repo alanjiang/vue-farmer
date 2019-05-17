@@ -5,3 +5,12 @@ https://github.com/didi/cube-ui
 2， CSS3
 
 https://www.runoob.com/css/css-boxmodel.html
+
+3， VUE 地区选择器
+
+https://github.com/jcc/v-distpicker
+4, tabs组件
+
+https://github.com/spatie/vue-tabs-component
+
+npm install vue-tabs-component --save

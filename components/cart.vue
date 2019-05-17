@@ -19,7 +19,7 @@
                 </div>
                 
                 
-                <div class="cart-price">¥ {{ item.price }},{{ item.symbol}}</div>
+                <div class="cart-price">¥ {{ item.price }}</div>
                 <div class="cart-count">
                     <span class="cart-control-minus" @click="subMer(item.id,item.symbol)">-</span>
                     {{ item.count }}
@@ -37,15 +37,12 @@
             <div class="cart-empty" v-if="cartList.length == 0">
             
              <img src="../images/cart.png" > <br>
-            购物车为空
+            亲，购物车饿瘪啦！
             
             </div>
         </div>
-        <div class="cart-promotion" v-show="cartList.length">
-            <span>使用优惠码：</span>
-            <input type="text" v-model="promotionCode">
-            <span class="cart-control-promotion" @click="handleCheckCode">验证</span>
-        </div>
+        
+        
         <div class="cart-footer" v-show="cartList.length">
             <div class="cart-footer-desc">
                 共计 <span>{{ countAll }}</span> 件商品
@@ -103,7 +100,7 @@
                   return [];
                 
               },
-            //调用 main.js中mutations 中的方法，传实参
+               //调用 main.js中mutations 中的方法，传实参
                 subMer(idValue, symbolValue) {
                  
                 this.cartList.find(item => { 
@@ -146,29 +143,37 @@
                 this.$store.commit('deleteCart', {id:idValue,symbol:symbolValue});
                  this.resetCartList();
             },
-            handleCheckCode () {
-                if (this.promotionCode === '') {
-                    window.alert('请输入优惠码');
-                    return;
-                }
-                if (this.promotionCode !== 'Vue.js') {
-                    window.alert('优惠码验证失败');
-                } else {
-                    this.promotion = 500;
-                }
-            },
             
-            resetCartList(){
-              alert('--state.cartList.length='+this.$store.state.cartList.length);
-              if(this.$store.state.cartList.length>0) this.$store.state.cartList=state.cartList;
+            
+              resetCartList(){
+             
+            
               this.cartList=JSON.parse(localStorage.getItem("cartList"));
             
             },
             
             handleOrder () {
-                this.$store.dispatch('buy').then(() => {
-                    window.alert('购买成功');
-                })
+                
+                 
+                 var member= localStorage.getItem("global.member");
+                 if(member ==null){
+                 
+                    Toast({
+  	    		    message: '下单之前需要会员认证!',
+  	    		    position: 'middle',
+  	    		    duration: 1000
+  	    	     }); 
+  	    	       //调用主组件FootBar中的showTab
+  	    	        this.$bus.emit('showTab','我的');
+  	    	        //调用主组件my.vue中的wechatShow
+  	    	        this.$bus.emit('wechatShow','会员资料');
+                 }else{
+                 
+                      member=SON.parse(member);
+                      alert('--member=>'+member);
+                 }
+                 
+  	    	     
             }
         },
         

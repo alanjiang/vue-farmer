@@ -3,8 +3,11 @@
     
         <router-link :info="info" :to="'/detail/' + info.id" class="product-main">
             
-           <div class="image">
-            <img  :src="info.image" :width="width" :height="height" v-bind="getImage(280,280,info.image)">
+           <div class="image" >
+           <img :src="info.image"> 
+            <!--
+            <img :src="info.image"  :width="width" :height="height" v-bind="getImage(280,280,info.image)"> 
+            -->
            </div>    
             <h4>{{ info.name }}</h4>
             
@@ -69,9 +72,49 @@ import { Toast,Button } from 'mint-ui';
                  this.$router.push('/detail/'+idValue);
             },
             
-            getImage(maxWidth,maxHeight,src)
+            getImage2(maxWidth,maxHeight,src)
             {
+                 this.$nextTick(function(){
+                   var imgDiv=document.getElementById('imgDiv');
+                   var img = new Image();
+                   img.src = src;
+                   var hRatio;
+                   var wRatio;
+                   var Ratio = 1;
+                   var w = img.width;
+                   var h = img.height;
+                   wRatio = maxWidth / w;
+                   hRatio = maxHeight / h;
+              
+                   if (maxWidth ==0 && maxHeight==0){
+                      Ratio = 1;
+                   }else if (maxWidth==0){//
+                        if (hRatio<1) Ratio = hRatio;
+                   }else if (maxHeight==0){  
+                      if (wRatio<1) Ratio = wRatio;
+                   }else if (wRatio<1 || hRatio<1){
+                        Ratio = (wRatio<=hRatio?wRatio:hRatio);
+                   }
+                   if (Ratio<1){
+                     w = w * Ratio;
+                     h = h * Ratio;
+                    }
+              
+                    var imgElement=document.createElement("img");
+                    imgElement.setAttribute("src",src);
+                    imgElement.setAttribute("width",w);
+                    imgElement.setAttribute("height",h);
+                    imgDiv.appendChild(imgElement);
+                     
+                 
+                });
                
+              console.log('width='+this.width+','+this.height);
+           },
+           
+           getImage(maxWidth,maxHeight,src)
+            {
+                
                 var img = new Image();
                 img.src = src;
                 var hRatio;
@@ -97,7 +140,7 @@ import { Toast,Button } from 'mint-ui';
               }
               this.width=w;
               this.height=h;
-             
+              console.log('width='+this.width+','+this.height);
            }
         }
         
@@ -169,6 +212,5 @@ import { Toast,Button } from 'mint-ui';
     .product-main:hover .product-add-cart{
         display: inline-block;
     }
-   
-
+  
 </style>

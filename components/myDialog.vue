@@ -104,7 +104,8 @@ export default {
             remain:null,
             product:null,
             symbol:'',
-            price_span:null,
+            price_span:null
+            
         }
     },
     methods:{
@@ -173,15 +174,11 @@ export default {
              
              //alert('---addToCart=>'+this.symbol);
              var params={'id':this.product.id,'symbol':this.symbol,'count':this.count};
-             
-            // alert('-params='+ params.id+','+params.symbol+','+params.count); 
+             this.closeMask();
              //调用main.js中的函数
              this.$store.commit('addCart', params);
-            
              //调用cart.vue组件中的this.$bus.on('cartChage',..)事件
              this.$bus.emit('cartChange',params);
-            
-             this.closeMask();
           
         },
         //规格有二维时，点击不分先后
@@ -546,8 +543,9 @@ li:hover{
     }
 
  .cart-count{
-        padding:0px 5px;
+        padding:2px 5px;
         width: 45%;
+        height:35px;
         overflow:hidden;
         text-align:left;
         color:#4A4A4A;
@@ -560,7 +558,7 @@ li:hover{
         margin: 0 4px;
         width: 24px;
         height: 24px;
-        line-height: 22px;
+        line-height: 24px;
         text-align: center;
         background: #FA8072;
         border-radius: 50%;

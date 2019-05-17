@@ -5,12 +5,12 @@
 
       <div class="page-title">
      
-          <mt-header fixed title="好吃点农场">
+          <mt-header fixed :title="shop.shop_name">
             <router-link to="/" slot="left">
-             <img src="../images/wenbixia.jpg" width="25" height="25" >
+             <img :src="headimgurl" width="25" height="25" >
             
            </router-link>
-          <mt-button  slot="right">
+          <mt-button  slot="right" class="inform">
               <mt-badge type="error">10</mt-badge>
            </mt-button>
        </mt-header>
@@ -94,15 +94,14 @@
               
               
         <mt-tab-container-item id="客服">
-          
            <router-link to="/myDialog">My Dialog</router-link>
-             
-          
         </mt-tab-container-item>
-        <mt-tab-container-item id="门店">
-          
-          <Product/>
-          
+        <mt-tab-container-item id="门店" v-model="shop">
+          <mt-cell :title="shop.shop_name">
+            <img slot="icon" :src="shop.objectKey" width="120" height="120">
+          </mt-cell>
+          <mt-cell :title="shop.shop_address"></mt-cell>
+          <mt-cell :title="shop.shop_tel"></mt-cell>
         </mt-tab-container-item>
         
         <mt-tab-container-item id="购物车">
@@ -133,12 +132,13 @@
     <mt-tabbar v-model="selected" fixed>
       <mt-tab-item v-for="menu in menus" :id="menu.name" :key="menu.id"  @click.native="switchIcon(menu.image)">
         
-        <img slot="icon" :src="menu.image" style="cursor:pointer;" >  
+        
+        <img slot="icon" :src="menu.image" style="cursor:pointer;" > 
+            
             {{ menu.name }}  
          </img>
          
-         
-        
+     
       </mt-tab-item>
     
     </mt-tabbar>
@@ -184,7 +184,7 @@ export default {
   },
   methods:{
     
-      
+    
     
     fetchProductList(){
      
@@ -193,17 +193,43 @@ export default {
           $.ajax({
            type:"POST",
            contentType: "application/json; charset=utf-8",
-           url:"http://www.dianliaome.com/sales/getproductlist/2059", 
+           url:"http://localhost/dian/sales/getproductlist/3333", 
            data:"{\"java\":\"OK\"}",
            datatype: "json",
            success: function (message) 
 		   {
 			   var resMsg=message.resMsg;
 			   var resCode=message.resCode;
+			   console.log('--Member_authen='+JSON.stringify(message.member_authen));
+			   console.log('--shop='+JSON.stringify(message.shop));
+			   console.log('--member='+message.member);
 			   message.items.forEach(t=>{
 			      __this.list.push(t);
 			   });
-               console.log(JSON.stringify(__this.list));
+               
+               
+               if(message.shop != null ){
+                   localStorage.setItem("shop",JSON.stringify(message.shop));
+                   var temShop=message.shop;
+                   __this.shop.shop_name=temShop.shop_name;
+                   __this .shop.shop_address=temShop.shop_address;
+                   __this.shop.shop_discription=temShop.shop_discription;
+                   __this.shop.objectKey=temShop.objectKey;
+                   __this.shop.shop_tel=temShop.shop_tel;
+                   
+                   //console.log('--shop_name='+__this.shop.shop_name);
+               }
+               if(message.member_authen != null ){
+               
+                  __this.headimgurl=message.member_authen.headimgurl;
+                  localStorage.setItem("global.member_authen",JSON.stringify(message.member_authen));
+                   
+               }
+               if(message.member != null ){
+                  localStorage.setItem("global.member",JSON.stringify(message.member));
+                   
+               }
+               
                localStorage.setItem("productList",JSON.stringify(__this.list));
             },
             
@@ -259,6 +285,18 @@ export default {
      }
   
   },
+  created () {
+   
+      // 监听来自cart.vue中切换窗口的事件,用户结算下单，需要校验登录 
+      this.$bus.on('showTab', (val) => {
+           
+          
+          this.selected=val;   
+                
+      });
+  
+  },
+  
   mounted(){
       //mounted 阶段初始化商品列表, 存储在store.state.productList中。
       this.$store.dispatch('getProductList');
@@ -277,7 +315,9 @@ export default {
    
       selected: '主页',
       category_selected:'科普体验',
-      list:[]
+      list:[],
+      shop: {'shop_name':'','shop_address':'','shop_discrption':'','objectKey':''},
+      headimgurl:'../images/wenbixia.jpg'
     };
   },
   
