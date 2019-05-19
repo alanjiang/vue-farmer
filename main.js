@@ -248,7 +248,7 @@ const mutations = {
          Toast({
 	    		  message: '成功加入购物车',
 	    		  position: 'middle',
-	    		  duration: 5000
+	    		  duration: 1000
 	    	  });
         
       } ,//end of addToCart 

@@ -193,16 +193,16 @@ export default {
           $.ajax({
            type:"POST",
            contentType: "application/json; charset=utf-8",
-           url:"http://localhost/dian/sales/getproductlist/3333", 
+           url:__this.domain+"/sales/getproductlist", 
            data:"{\"java\":\"OK\"}",
            datatype: "json",
            success: function (message) 
 		   {
 			   var resMsg=message.resMsg;
 			   var resCode=message.resCode;
-			   console.log('--Member_authen='+JSON.stringify(message.member_authen));
-			   console.log('--shop='+JSON.stringify(message.shop));
-			   console.log('--member='+message.member);
+			   //console.log('--Member_authen='+JSON.stringify(message.member_authen));
+			   //console.log('--shop='+JSON.stringify(message.shop));
+			   //console.log('--member='+message.member);
 			   message.items.forEach(t=>{
 			      __this.list.push(t);
 			   });
@@ -222,10 +222,15 @@ export default {
                if(message.member_authen != null ){
                
                   __this.headimgurl=message.member_authen.headimgurl;
+                  //告诉my.vue组件更新数据
+                  __this.$bus.emit('memberAuthenChange',message.member_authen);
+                  
                   localStorage.setItem("global.member_authen",JSON.stringify(message.member_authen));
                    
                }
                if(message.member != null ){
+                 //告诉my.vue组件更新数据
+                  __this.$bus.emit('memberChange',message.member);
                   localStorage.setItem("global.member",JSON.stringify(message.member));
                    
                }
@@ -317,7 +322,8 @@ export default {
       category_selected:'科普体验',
       list:[],
       shop: {'shop_name':'','shop_address':'','shop_discrption':'','objectKey':''},
-      headimgurl:'../images/wenbixia.jpg'
+      headimgurl:'../images/wenbixia.jpg',
+      domain:'http://www.dianliaome.com'
     };
   },
   

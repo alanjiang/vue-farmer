@@ -169,7 +169,7 @@
   	    	        this.$bus.emit('wechatShow','会员资料');
                  }else{
                  
-                      member=SON.parse(member);
+                      member=JSON.parse(member);
                       alert('--member=>'+member);
                  }
                  
