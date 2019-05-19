@@ -61,7 +61,7 @@
     </div>
 </template>
 <script>
-    import { Navbar, Toast } from 'mint-ui';
+    import { Navbar, Toast,Indicator } from 'mint-ui';
     export default {
       data () {
             return {
@@ -69,7 +69,9 @@
                 promotionCode: '',
                 promotion: 0,
                
-                cartList: this.calCartList ()
+                cartList: this.calCartList (),
+                
+                member: null
                 
             }
         },
@@ -155,8 +157,8 @@
             handleOrder () {
                 
                  
-                 var member= localStorage.getItem("global.member");
-                 if(member ==null){
+                 
+                 if(this.member ==null){
                  
                     Toast({
   	    		    message: '下单之前需要会员认证!',
@@ -169,8 +171,12 @@
   	    	        this.$bus.emit('wechatShow','会员资料');
                  }else{
                  
-                      member=JSON.parse(member);
-                      alert('--member=>'+member);
+                      alert(JSON.parse(this.member));
+                      
+                       Indicator.open({
+                        text: '下单中...',
+                        spinnerType: 'fading-circle'
+                        });
                  }
                  
   	    	     
@@ -187,6 +193,12 @@
              this.$bus.on('cartChange', (val) => {
                //让购物车中的商品及时更新
               this.cartList=JSON.parse(localStorage.getItem("cartList"));
+                
+             });
+             
+             this.$bus.on('memberChange', (val) => {
+               
+               this.member=val;
                 
              });
        
