@@ -187,7 +187,8 @@ export default {
     
     
     fetchProductList(){
-     
+         
+          
           var __this=this;
          
           $.ajax({
@@ -224,7 +225,7 @@ export default {
                   __this.headimgurl=message.member_authen.headimgurl;
                   //告诉my.vue组件更新数据
                   __this.$bus.emit('memberAuthenChange',message.member_authen);
-                  
+                 // alert('---fetchProductList---'+message.member_authen);
                   localStorage.setItem("global.member_authen",JSON.stringify(message.member_authen));
                    
                }
@@ -232,7 +233,7 @@ export default {
                  //告诉my.vue组件更新数据
                   __this.$bus.emit('memberChange',message.member);
                   localStorage.setItem("global.member",JSON.stringify(message.member));
-                   
+                  // alert('---fetchProductList---'+message.member);
                }
                
                localStorage.setItem("productList",JSON.stringify(__this.list));

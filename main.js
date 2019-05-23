@@ -136,7 +136,7 @@ const mutations = {
 		
 		
 		state.productList=data;
-		console.log('--datas='+JSON.stringify(data));
+		//console.log('--datas='+JSON.stringify(data));
 		localStorage.setItem("productList",JSON.stringify(data));
 	},
 	

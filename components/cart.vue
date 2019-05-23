@@ -62,6 +62,7 @@
 </template>
 <script>
     import { Navbar, Toast,Indicator } from 'mint-ui';
+    import $ from 'jquery';
     export default {
       data () {
             return {
@@ -71,7 +72,9 @@
                
                 cartList: this.calCartList (),
                 
-                member: null
+                member: null,
+                
+                domain:'http://www.dianliaome.com'
                 
             }
         },
@@ -156,8 +159,6 @@
             
             handleOrder () {
                 
-                 
-                 
                  if(this.member ==null){
                  
                     Toast({
@@ -169,19 +170,76 @@
   	    	        this.$bus.emit('showTab','我的');
   	    	        //调用主组件my.vue中的wechatShow
   	    	        this.$bus.emit('wechatShow','会员资料');
-                 }else{
+                 }else
+                 {
                  
-                      alert(JSON.parse(this.member));
-                      
-                       Indicator.open({
-                        text: '下单中...',
-                        spinnerType: 'fading-circle'
-                        });
+                     this.makeOrder();
+                       
                  }
-                 
-  	    	     
-            }
+                
         },
+        
+        makeOrder(){
+        
+         var obj={};
+         obj.mers=this.cartList;
+        
+          var jsondata=JSON.stringify(obj);
+          alert('--jsondata='+jsondata);
+          //Indicator.open({
+             // text: '订单生成中...',
+              //spinnerType: 'fading-circle'
+          //});
+          
+		  var __this=this;
+         $.ajax({
+           type:"POST",
+           contentType: "application/json; charset=utf-8",
+           url:__this.domain+"/newsales/makeOrder",
+           data:jsondata,
+           datatype: "json",
+           success: function (message) 
+		   {
+			   var resMsg=message.resMsg;
+			   var resCode=message.resCode;
+			  
+			   //Indicator.close();
+			   
+			    Toast({
+  	    		     message: resMsg,
+  	    		     position: 'middle',
+  	    		     duration: 1000
+  	    	    });
+			   if(resCode=='0') 
+			   {
+			   
+			      
+			        
+			   }else 
+			   {   
+			   
+			   }
+                
+            },
+            
+            error: function (message) 
+		    {
+               //Indicator.close();
+			   
+			    Toast({
+  	    		     message: '貌似出了点问题，请稍后再试',
+  	    		     position: 'middle',
+  	    		     duration: 1000
+  	    	    });
+            }
+             
+              
+         });
+         
+          
+        }
+        
+     },
         
         mounted(){
         
@@ -199,8 +257,13 @@
              this.$bus.on('memberChange', (val) => {
                
                this.member=val;
+               
+              
+           
                 
              });
+             
+             
        
        }
         

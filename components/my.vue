@@ -59,7 +59,7 @@
         
         <div v-show="mobile_binded">
         
-        <mt-cell title="手机号已验证">{{ this.member.mobile }}</mt-cell>
+        <mt-cell title="会员手机号已验证"></mt-cell>
 
         
         </div>
@@ -178,7 +178,7 @@ export default {
   	    		  duration: 1000
   	    	     });
   	    	     
-  	    	     this.button_disabled=false;
+  	    	     __this.button_disabled=false;
                  return false;
 			   
 			   }
@@ -190,7 +190,7 @@ export default {
                
 			     alert("貌似出了点问题，请稍后再试"); 
 			     
-			      this.button_disabled=false;
+			      __this.button_disabled=false;
             }
             
             
@@ -199,11 +199,8 @@ export default {
             
        },
        
+       //提交认证
        authen () {
-        
-       
-        
-        
         Indicator.open({
            text: '认证中,请稍后...',
            spinnerType: 'fading-circle'
@@ -236,12 +233,21 @@ export default {
 			       __this.member.id=message.id;
 			       __this.member.mobile=message.mobile;
 			       __this.member.regtime=message.regtime;
-			        Indicator.close();
+			       
+			       //向cart.vue发事件，更新 member
+                   __this.$bus.emit('memberChange',__this.member);
+			       Indicator.close();
+			       //切换至cart.vue 
+			       __this.$bus.emit('showTab','购物车');
+			       
+			        
+			       
+			       
 			        
 			   }else 
 			   {
-				    Indicator.close();
-  	    	         __this.authen_button_disabled=true;
+				    
+  	    	         __this.authen_button_disabled=false;
   	    	          Indicator.close();
                      return false;
 			   
@@ -304,6 +310,7 @@ export default {
   	    		     position: 'middle',
   	    		     duration: 500
   	    	         });
+  	    	         __this.button_disabled=false;
                      return false;
 			   
 			    }
@@ -315,7 +322,10 @@ export default {
 		    {
                
 			    alert("貌似出了点问题，请稍后再试"); 
+			    __this.button_disabled=false;
             }
+            
+           
               
          });
        
@@ -364,6 +374,8 @@ export default {
                  
                 
              });
+             
+             
        
      }
   
