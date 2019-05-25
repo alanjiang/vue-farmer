@@ -20,8 +20,13 @@
   
     <mt-tab-container v-model="selected">
     
-     <mt-tab-container-item id="订单">
-        订单
+      <mt-tab-container-item id="订单">
+       <p></p>
+        <mt-cell v-for="order in orders"  :title="order.order_no">
+            总价：{{ order.total_price }}
+        </mt-cell>
+            
+            
       </mt-tab-container-item>
     
     
@@ -96,7 +101,7 @@
           <mt-cell title="收件地址"></mt-cell>
           <v-distpicker></v-distpicker>
 
-         <mt-field label="详细街道信息" placeholder="详细街道信息" type="detail" v-model="detail"></mt-field>
+         <mt-field label="详细街道信息" placeholder="详细街道信息" v-model="detail"></mt-field>
      
        </div>
        
@@ -111,12 +116,15 @@
 
 import {field,Toast,Indicator} from 'mint-ui';
 import $ from 'jquery';
+
+import datas from '../utils/table.js';
 export default {
   name: 'My',
 
   data() {
     return {
-      selected: '会员资料',
+     
+      selected: '主页',
       address_added_show: false,
       wechat_authen_show: false,
       mobile:'',
@@ -131,12 +139,63 @@ export default {
       authen_button_disabled:false,
       domain:'http://www.dianliaome.com',
       //已绑定手机
-      mobile_binded:true 
+      mobile_binded:true,
+      //近1天的订单列表
+      orders:[]
       };
   },
   
   methods:{
       
+      fetch_orders () {
+         alert("--fetch_orders---");
+          var __this=this;
+          $.ajax({
+           type:"GET",
+           contentType: "application/json; charset=utf-8",
+           url:__this.domain+"/newsales/getOrderList", 
+          
+           datatype: "json",
+           success: function (message) 
+		   {
+			   var resMsg=message.resMsg;
+			   var resCode=message.resCode;
+			   alert(resMsg+','+message.results);
+			   if(resCode == '0' ){
+			     
+			      __this.orders=message.results;
+			     
+			   }else
+			   {
+			     Toast({
+  	    		  message: resMsg,
+  	    		  position: 'middle',
+  	    		  duration: 1000
+  	    	     });
+  	    	     
+  	    	     
+                
+			   
+			   }
+			   
+            },
+            
+            error: function (jqXHR, textStatus, errorThrown) 
+		    {
+               
+			     Toast({
+  	    		  message: "貌似有点问题",
+  	    		  position: 'middle',
+  	    		  duration: 1000
+  	    	     });
+  	    	     
+            }
+            
+            
+              
+         });
+            
+       },
        
        fetch_code () {
           //点击获取验证码后，按钮不可点击。
@@ -375,7 +434,14 @@ export default {
                 
              });
              
+             this.$bus.on('switchMyTab', (val) => {
+               
+                this.selected=val;
+                
+                
+             });
              
+            this.fetch_orders();
        
      }
   

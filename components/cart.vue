@@ -183,15 +183,12 @@
         
          var obj={};
          obj.mers=this.cartList;
-        
-          var jsondata=JSON.stringify(obj);
-          alert('--jsondata='+jsondata);
-          //Indicator.open({
-             // text: '订单生成中...',
-              //spinnerType: 'fading-circle'
-          //});
-          
-		  var __this=this;
+         var jsondata=JSON.stringify(obj);
+         Indicator.open({
+             text: '订单生成中...',
+             spinnerType: 'fading-circle'
+          });
+		 var __this=this;
          $.ajax({
            type:"POST",
            contentType: "application/json; charset=utf-8",
@@ -203,17 +200,21 @@
 			   var resMsg=message.resMsg;
 			   var resCode=message.resCode;
 			  
-			   //Indicator.close();
+			   Indicator.close();
 			   
 			    Toast({
   	    		     message: resMsg,
   	    		     position: 'middle',
-  	    		     duration: 1000
+  	    		     duration: 1500
   	    	    });
 			   if(resCode=='0') 
 			   {
 			   
-			      
+			       //向FootBar.vue发事件，切换至“我的"
+                   __this.$bus.emit('showTab','我的');
+                   
+                   //向my.vue发事件switchMyTab，让订单处于选中
+                   __this.$bus.emit('switchMyTab','订单');
 			        
 			   }else 
 			   {   
@@ -224,12 +225,12 @@
             
             error: function (message) 
 		    {
-               //Indicator.close();
+               Indicator.close();
 			   
 			    Toast({
   	    		     message: '貌似出了点问题，请稍后再试',
   	    		     position: 'middle',
-  	    		     duration: 1000
+  	    		     duration: 1500
   	    	    });
             }
              

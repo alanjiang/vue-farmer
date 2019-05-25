@@ -6,11 +6,14 @@ https://github.com/didi/cube-ui
 
 https://www.runoob.com/css/css-boxmodel.html
 
-3， VUE 地区选择器
+3,VUE 地区选择器
 
 https://github.com/jcc/v-distpicker
-4, tabs组件
+4, dialog
 
-https://github.com/spatie/vue-tabs-component
+https://github.com/vue-garden/vue-dialog
 
-npm install vue-tabs-component --save
+npm install hsy-vue-dialog -S
+
+5, http://doc.huangsw.com/vue-easytable/app.html#/table/horizontalResize
+

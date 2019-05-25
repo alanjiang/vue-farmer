@@ -94,7 +94,10 @@
               
               
         <mt-tab-container-item id="客服">
-           <router-link to="/myDialog">My Dialog</router-link>
+           <router-link to="/action_win">Action Window</router-link>
+           <router-link to="/modal">Modal</router-link>
+           
+           
         </mt-tab-container-item>
         <mt-tab-container-item id="门店" v-model="shop">
           <mt-cell :title="shop.shop_name">

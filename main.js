@@ -13,8 +13,15 @@ import 'mint-ui/lib/style.css';
 import VueBus from 'vue-bus';
 
 import VDistpicker from 'v-distpicker';
+import Dialog from 'hsy-vue-dialog';
 
+//引入样式
+import 'vue-easytable/libs/themes-base/index.css';
+import {VTable,VPagination} from 'vue-easytable';
+Vue.component(VTable.name, VTable);
+Vue.component(VPagination.name, VPagination);
 
+Vue.use(Dialog);
 
 Vue.component('v-distpicker', VDistpicker);
 
@@ -80,14 +87,20 @@ const Routers = [
         component: (resolve) => require(['./views/vuexdemo.vue'], resolve)
     },
     
-    /*{
-        path: '/myDialog',
+    {
+        path: '/action_win',
         meta: {
-            title: 'My Dialog'
+            title: 'Action Window'
         },
-        component: (resolve) => require(['./views/myDialog.vue'], resolve)
-    },*/
-   
+        component: (resolve) => require(['./components/action_window.vue'], resolve)
+    },
+    {
+        path: '/modal',
+        meta: {
+            title: 'Modal'
+        },
+        component: (resolve) => require(['./components/loginModal.vue'], resolve)
+    },
     /*
     {
         path: '/detail/:id',
