@@ -4,9 +4,9 @@
 
 <mt-button type="primary" size="small" @click="visible = true">remove</mt-button>
 
-<hsy-dialog class="confirm" v-model="visible">
-  <div slot="title">登录验证</div>
-  <div slot="body">
+<hsy-dialog class="confirm" v-model="visible" style="width:350px">
+  <div slot="title" style="width:350px">登录验证</div>
+  <div slot="body" style="width:350px">
     <div>
         <mt-field label="手机号" placeholder="手机号" v-model="mobile"></mt-field>
           <mt-field label="验证码" placeholder="验证码" type="code" v-model="code">
@@ -40,6 +40,17 @@
 </hsy-dialog>
 </div>
 </template>
+
+<style scoped>
+.hsy-dialog .main .title .content>* {
+  width: 95%;
+  min-width: 85px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+</style>
 <script>
 
 import {Button,Field} from 'mint-ui';

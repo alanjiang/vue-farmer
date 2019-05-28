@@ -1,0 +1,32 @@
+
+1, location for flutter
+/Users/zhangxiao/Desktop/Flutter/flutter/bin
+
+2, upgrade 
+
+flutter upgrade 
+
+3,  add environment variables 
+
+
+vi ~/.bash_profile
+
+souce ~/.bash_profile
+
+export PATH=/Users/zhangxiao/Desktop/Flutter/flutter/bin:$PATH
+
+
+4, open IOS simulator
+
+$open -a Simulator
+
+5, 打开终端并运行这些命令来安装用于将Flutter应用安装到iOS设备的工具
+
+brew update
+brew install --HEAD libimobiledevice
+brew install ideviceinstaller ios-deploy cocoapods
+pod setup
+
+6,安装Android Studio
+
+

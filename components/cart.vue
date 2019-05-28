@@ -216,9 +216,6 @@
                    //向my.vue发事件switchMyTab，让订单处于选中
                    __this.$bus.emit('switchMyTab','订单');
 			        
-			   }else 
-			   {   
-			   
 			   }
                 
             },
