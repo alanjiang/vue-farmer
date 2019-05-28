@@ -21,27 +21,44 @@
     <mt-tab-container v-model="selected">
     
       <mt-tab-container-item id="订单">
-       <p></p>
+       <br>
+        
        <div v-show="show_order_list">
-        <mt-cell @click.native="detail(order.id,order.total_price)"  v-for="order in orders"  :title="order.order_no" is-link>
-            <span style="color: red;">总价：¥ {{ order.total_price }}</span> 
+        <mt-cell  title="条件过滤" @click.native="show_order_filter" is-link>
+            <img slot="icon" src="../images/filter.png" width="24" height="24">
+           <span style="color:#FF00FF;font-size:16px;" > {{ this.filter_value }}</span>  
+        </mt-cell> 
+        <mt-picker v-show="show_filter_order" :slots="slots" @change="queryOrder"></mt-picker>
+       
+        <div v-for="order in filter_orders">
+        <mt-cell @click.native="detail(order.id,order.total_price)"   :title="order.order_no" is-link>
             
             <span  v-show="order.order_status == 1">待付款</span>
             <span  v-show="order.order_status == 2">己付款</span>
+            <span  v-show="order.order_status == 5">己签收</span>
         </mt-cell>
+        <mt-cell>
+           总计：<span style="color: red;">¥ {{ order.total_price }}</span> 
+        </mt-cell>
+        </div>
       </div>
         <div v-show="show_order_detail" >
-         <p> 
-         <mt-button type="primary" size="large" @click.native="backOrderList"> 返回订单列表 </mt-button>
-        </p>  
+          
         
          <mt-cell title="新增收件地址" is-link @click.native="address_add">
             <img slot="icon" src="../images/address_add.png">
         </mt-cell> 
          
+         <p v-show="cur_order.order_status == 1"> 订单状态：未付款  </p>
+          <p v-show="cur_order.order_status == 2"> 订单状态：已付款  </p>
+          <p v-show="cur_order.order_status == 5"> 订单状态：已签收  </p>
+         
          <p v-for="mer in mers" :key="mer.merid">
+         
+          
+          
           <mt-cell  :title="mer.mername">
-            <img slot="icon" :src="mer.merpic" width="90" height="90">
+            <img slot="icon" :src="mer.merpic" width="60" height="60">
             <span style="color:red">¥{{ mer.itemprice}}</span>X <span>{{ mer.quantity}}</span>
            <span v-show="mer.unit"> 单位：{{ mer.unit}}</span>  
           </mt-cell> 
@@ -60,15 +77,16 @@
              
           </mt-cell>
           
-           <mt-cell >
+           <mt-cell  v-show="cur_order.order_status == 1">
             <img slot="icon" src="../images/wechatpay.jpg">
            
             <mt-button type="primary" size="normal" :disabled="wechat_pay_btn_disabled"  @click.native="unifyOrder">去支付</mt-button>
            
           </mt-cell> 
           
-           <mt-button type="primary" size="small" @click.native="backOrderList"> 返回订单列表 </mt-button>
-          
+           <p> 
+             <mt-button type="primary" size="large" @click.native="backOrderList"> 返回订单列表 </mt-button>
+           </p> 
         </div>
         
           
@@ -127,22 +145,22 @@
         <p></p>
       <!--  地址簿中分列表和新增界面 --->
        <div v-show="show_address_list">
-        <!-- 
-        <mt-cell title="默认" is-link>
-             <span>广东省广州市天河区天润路124号</span>
-             <img slot="icon" src="../images/address_default.png" width="20" height="20">
-            </mt-cell>
-             <mt-cell title="收件地址1" is-link>
-             <span>广东省广州市天河区天润路124号</span>
-            
-            </mt-cell>
-             <mt-cell title="收件地址2" is-link>
-             <span>广东省广州市天河区天润路124号</span>
-           </mt-cell>
-        -->   
+       
+       
+          <mt-cell is-link v-for="address in address_list" @click.native="addressActionsShow">
+             <span>收件人:{{ address.name }} 手机:{{ address.mobile }}  {{ address.province}} {{address.city }} {{address.district}} {{address.detail}} </span>
+             <img v-show="address.default_set == 2" slot="icon" src="../images/address_default.png">
+         </mt-cell>
+         
+             
           <div style="text-align:center;"> 
             <mt-button type="primary" @click="showAddressAdd">新增收件地址</mt-button>
           </div>
+          
+          <mt-actionsheet :actions="address_actions" v-model="address_actions_show"> 
+          </mt-actionsheet>
+          
+          
        </div>
        
        <div v-show="show_address_add">
@@ -156,6 +174,11 @@
          <mt-field label="详细街道信息" placeholder="详细街道信息" v-model="rec_detail"></mt-field>
          
          <mt-button type="primary" size="large"  @click="address_save">保存</mt-button>
+          <p></p>
+         <mt-button type="primary" size="small" @click.native="backAddressList">返回地址列表</mt-button>
+         
+         
+          
          
        </div>
        
@@ -168,10 +191,10 @@
 
 <script>
 
-import {field,Toast,Indicator} from 'mint-ui';
+import {field,Toast,Indicator,Picker,Actionsheet} from 'mint-ui';
 import $ from 'jquery';
 
-import datas from '../utils/table.js';
+
 export default {
   name: 'My',
 
@@ -196,7 +219,7 @@ export default {
       mobile_binded:true,
       //近1天的订单列表
       orders:[],
-      
+      filter_orders:[],
       show_order_list:true,
       show_order_detail:false,
       //订单中的商品清单
@@ -224,12 +247,148 @@ export default {
        //地址列表显示
        show_address_list: true,
        //新增地址表单显示
-       show_address_add:  true
+       show_address_add: false,
+       //地址列表
+        address_list:[],
+        
+        slots:[{
+          flex: 1,
+          values: ['待付款', '己付款', '己签收','全部'],
+          className: 'slot1',
+          textAlign: 'center'
+        }],
+        
+        filter_value:'全部',
+        
+        show_filter_order:false,
+        
+        // 地址栏删除、修改action sheet上拉效果
+        address_actions_show:false,
+        
+        address_actions:[{
+            name: '设为默认地址',
+        
+           method: this.address_set_default
+      }, {
+          name: '修改',
+          method: this.address_edit
+      },{
+          name: '删除',
+          method: this.address_del
+      }]
+
+
       
       };
   },
   
   methods:{
+      addressActionsShow () {
+         this.address_actions_show=true;
+      },
+      
+      address_set_default () {
+      
+        alert('--address set default--');
+      },
+      
+      address_del () {
+      
+        alert('--address del--');
+      
+      },
+      
+      adrress_edit () {
+         alert('--address edit--');
+      },
+      queryOrder (picker, values) {
+        
+         this.filter_value=values[0];
+         this.show_filter_order=false;
+         if('待付款'==values[0].trim()){
+           this.filter_orders=this.orders.filter(v => v.order_status === 1);
+         }
+         if('己付款'==values[0].trim()){
+           
+           this.filter_orders=this.orders.filter(v => v.order_status === 2);
+           
+         }
+         if('己签收'==values[0].trim()){
+           this.filter_orders=this.orders.filter(v => v.order_status === 5);
+         }
+         if('全部'==values[0].trim()){
+           this.filter_orders=this.orders;
+         }
+         
+      },
+       show_order_filter () {
+        
+          this.show_filter_order = true;
+       
+       },
+       
+       
+       backAddressList () {
+        
+          this.show_address_list=true;
+          this.show_address_add=false;
+       
+       
+       },
+      //获取地址列表
+   
+        fetch_address_list () {
+           //alert('---fetch_address_list---');
+           
+          var __this=this;
+          $.ajax({
+           type:"GET",
+           contentType: "application/json; charset=utf-8",
+           url:__this.domain+"/address/browseAddress",
+           datatype: "json",
+           success: function (message) 
+		   {
+			   var resMsg=message.resMsg;
+			   var resCode=message.resCode;
+			  
+			   if(resCode == '0' ){
+			     
+			      __this.address_list=message.addresses;
+			      __this.filter_address_list=message.addresses;
+			      //alert('---addresses='+message.addresses);
+			     
+			   }else
+			   {
+			     Toast({
+  	    		  message: resMsg,
+  	    		  position: 'middle',
+  	    		  duration: 1000
+  	    	     });
+  	    	     
+  	    	     
+                
+			   
+			   }
+			   
+            },
+            
+            error: function (jqXHR, textStatus, errorThrown) 
+		    {
+                
+			     Toast({
+  	    		  message: "貌似有点问题",
+  	    		  position: 'middle',
+  	    		  duration: 1000
+  	    	     });
+  	    	     
+            }
+            
+            
+              
+         });
+            
+       },
+  
   
    areaSelected(data) {
       //alert(data.province.value + ' | ' + data.city.value + ' | ' + data.area.value);
@@ -289,9 +448,6 @@ export default {
 	      return false;
        }
        
-      
-       
-       
        var json={"id":this.rec_id,"name": this.rec_name,
     		   "mobile":this.rec_mobile ,"province":this.rec_province,"city": this.rec_city,"district":this.rec_district,"detail":this.rec_detail,
     		   
@@ -308,7 +464,7 @@ export default {
            $.ajax({
            type:"POST",
            contentType: "application/json; charset=utf-8",
-           url:__this.domain+"//address/update",
+           url:__this.domain+"/address/update",
            data:jsondata,
            datatype: "json",
            success: function (message) 
@@ -325,8 +481,11 @@ export default {
 			   {
 				   __this.show_address_add=false;
                    __this.show_address_list=true;
+                   //新增地址成功后，更新地址列表
+                   __this.fetch_address_list();
 				   
 			   }else{
+				  
 				  
 				 
 			   }
@@ -547,6 +706,8 @@ export default {
 			   if(resCode == '0' ){
 			     
 			      __this.orders=message.results;
+			      
+			      __this.filter_orders=message.results;
 			     
 			   }else
 			   {
@@ -826,7 +987,7 @@ export default {
              });
              
             this.fetch_orders();
-       
+            this.fetch_address_list();
      }
   
 };
