@@ -30,7 +30,7 @@
         </mt-cell> 
         <mt-picker v-show="show_filter_order" :slots="slots" @change="queryOrder"></mt-picker>
        
-        <div v-for="order in filter_orders">
+        <div v-if="filter_orders" v-for="order in filter_orders">
         <mt-cell @click.native="detail(order.id,order.total_price)"   :title="order.order_no" is-link>
             
             <span  v-show="order.order_status == 1">待付款</span>
@@ -41,6 +41,10 @@
            总计：<span style="color: red;">¥ {{ order.total_price }}</span> 
         </mt-cell>
         </div>
+        <div v-else>
+           <p>未找到相关的订单</p>
+        </div>
+        
       </div>
         <div v-show="show_order_detail" >
           
@@ -329,12 +333,27 @@ export default {
          this.cur_address_id=id;
          
       },
-      //将当前地址设置为默认收件地址
+      //将当前地址设置为默认收件地址,如果当前订单已加载，则将默认地址与订单绑定
       address_set_default () {
-      
-       var json={"id":this.cur_address_id};
+       //alert(this.cur_address_id+","+this.default_set_address.id);
+       if(this.cur_address_id == this.default_set_address.id){
+         Toast({
+  	    		     message: '已经是默认收件地址',
+  	    		     position: 'middle',
+  	    		     duration: 1000
+  	    	     });
+         return false;
+       }
+       var json=null;
+       if(this.cur_order){
+         json={"id":this.cur_address_id,'orderid':this.cur_order.id};
+       }else{
+          json={"id":this.cur_address_id};
+       }
        var __this=this;
        var jsondata=JSON.stringify(json);
+       
+      // alert('---jsondata='+jsondata);
        
        Indicator.open({
            text: '请求提交中...',
@@ -358,7 +377,7 @@ export default {
   	    	     });
 			   if(resCode=='0')
 			   {
-				   //刷新地址列表
+				   //刷新地址列表,重置默认的地址
                   __this.address_list.forEach(t=>{
                     
                     if(t.id != __this.cur_address_id){
@@ -377,6 +396,15 @@ export default {
                   //刷新由订单详情加载的默认收件地址
                   __this.default_set_address= __this.address_list.find(t=> t.default_set === 2);
                   
+                  //当前订单已加载
+                  if(__this.cur_order){
+                   //重设的默认定单即为当前订单
+                     __this.selected_address= __this.default_set_address;
+			      
+			      }
+                  
+                  //重置当前订单收件地址标识
+                  //__this.cur_order.rec_address_id=__this.cur_address_id;
                   if(__this.address_reset){
                     //重置订单立即看到更新，应回退到订单Tab
                      __this.selected='订单';
@@ -403,12 +431,12 @@ export default {
       
       address_del () {
       
-        alert('--address del--');
+        
       
       },
       
       adrress_edit () {
-         alert('--address edit--');
+        
       },
       
       //根据订单状态过滤
@@ -631,11 +659,13 @@ export default {
          });
    
    },  
-     
+    
+   
    //统一下单 
    unifyOrder () {
-	
-	if(!this.cur_order.rec_address_id){
+    
+
+	if(!this.default_set_address){
 	   Toast({
   	    		     message: '收件地址未填写',
   	    		     position: 'middle',
@@ -643,12 +673,9 @@ export default {
   	   });
 	   return false;
 	}
-	Indicator.open({
-           text: '支付中...',
-           spinnerType: 'fading-circle'
-    });
+	
     this.wechat_pay_btn_disabled=true;
-    var json={"out_trade_no":this.cur_order.order_no,"total_fee": this.cur_order.total_price,
+    var json={"addressid":this.default_set_address.id,"out_trade_no":this.cur_order.order_no,"total_fee": this.cur_order.total_price,
     		   "openid":this.member_authen.openid ,"orderid":this.cur_order.id,"shopid": this.cur_order.shopid}
      
      var __this=this;
@@ -675,7 +702,7 @@ export default {
 				   __this.envWechatPay();
 				   
 			   }else{
-				  Indicator.close();
+				 
 				  Toast({
   	    		     message: resMsg,
   	    		     position: 'middle',
@@ -687,7 +714,7 @@ export default {
             
             error: function (message) 
 		    {
-               Indicator.close();
+               
 			     Toast({
   	    		     message: '服务器异常',
   	    		     position: 'middle',
@@ -715,6 +742,10 @@ export default {
   },
 
   wechatPay () {
+        Indicator.open({
+           text: '支付中...',
+           spinnerType: 'fading-circle'
+      });
        var __this=this;
 	   WeixinJSBridge.invoke(
 	       'getBrandWCPayRequest', {
@@ -726,11 +757,11 @@ export default {
 	           "paySign":__this.unifiy_order.paySign
 	       },
 	       function(res){    
-	    	   
+	    	   Indicator.close();
 	           if(res.err_msg == "get_brand_wcpay_request:ok" ) 
 	           {
 					
-					 Indicator.close();
+					
 					 Toast({
   	    		     message: '支付成功',
   	    		     position: 'middle',
@@ -752,8 +783,6 @@ export default {
       },
        //获取订单详情,地址列表
        detail (id,total_price) {
-         
-
           //订单详情显示
           this.show_order_detail=true;
           //订单列表不显示
@@ -786,9 +815,7 @@ export default {
 			      __this.address_list=message.addresses;
 			      __this.selected_address=message.selected_address;
 			      __this.default_set_address=message.default_address;
-			      alert('-address_list='+message.addresses);
-			      alert('-selected_address='+message.selected_address);
-			      alert('-default_set_address='+JSON.stringify(message.default_address));
+			      
 			   }else
 			   {
 			     Toast({
