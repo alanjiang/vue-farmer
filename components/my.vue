@@ -24,7 +24,7 @@
        <br>
         
        <div v-show="show_order_list">
-        <mt-cell  title="条件过滤" @click.native="show_order_filter" is-link>
+        <mt-cell  title="订单状态" @click.native="show_order_filter" is-link>
             <img slot="icon" src="../images/filter.png" width="24" height="24">
            <span style="color:#FF00FF;font-size:16px;" > {{ this.filter_value }}</span>  
         </mt-cell> 
@@ -45,15 +45,42 @@
         <div v-show="show_order_detail" >
           
         
-         <mt-cell title="新增收件地址" is-link @click.native="address_add">
+         <mt-cell v-if="address_list.length" title="重设收件地址" is-link @click.native="address_manage">
+            <img slot="icon" src="../images/address_manage.png">
+        </mt-cell> 
+        <mt-cell v-else title="新增收件地址" is-link @click.native="address_add">
             <img slot="icon" src="../images/address_add.png">
         </mt-cell> 
+       
+      
+      
+       <div v-if="selected_address">
+       
+         <mt-cell class="cell" is-link   :title="'收件地址:'+selected_address.province+''+selected_address.city+''+selected_address.district+''+selected_address.detail" :label="'收件人:'+selected_address.name+'|手机:'+selected_address.mobile">
+             <img slot="icon" src="../images/address_default.png">
+         </mt-cell>
+       
+       </div>
+       
+       <div v-else>
+         <mt-cell v-if="default_set_address" class="cell" is-link   :title="'收件地址:'+default_set_address.province+''+default_set_address.city+''+default_set_address.district+''+default_set_address.detail" :label="'收件人:'+default_set_address.name+'|手机:'+default_set_address.mobile">
+             <img slot="icon" src="../images/address_default.png">
+         </mt-cell>
+       
+       </div>
+     
+         <mt-cell v-show="cur_order.order_status == 1" title="订单状态：未付款"></mt-cell>
+         <mt-cell v-show="cur_order.order_status == 2" title="订单状态：已付款"></mt-cell>
+         <mt-cell v-show="cur_order.order_status == 5" title="订单状态：已签收"></mt-cell>
+         <mt-cell v-show="cur_order.order_status == 6" title="订单状态：退款中"></mt-cell>
+         <mt-cell v-show="cur_order.order_status == 7" title="订单状态：换货中"></mt-cell>
+         <mt-cell v-show="cur_order.order_status == 8" title="订单状态：已退款"></mt-cell>
          
-         <p v-show="cur_order.order_status == 1"> 订单状态：未付款  </p>
-          <p v-show="cur_order.order_status == 2"> 订单状态：已付款  </p>
-          <p v-show="cur_order.order_status == 5"> 订单状态：已签收  </p>
+
          
-         <p v-for="mer in mers" :key="mer.merid">
+        
+         
+         <div v-for="mer in mers" :key="mer.merid">
          
           
           
@@ -64,11 +91,11 @@
           </mt-cell> 
           
           <mt-cell>
-            <span v-show="mer.label">规格：{{mer.label}}| </span>
+            <span style="font-size:10px;color:#141414;" v-show="mer.label">规格：{{mer.label}}| </span>
           
             <span style="color:red">小计：¥{{ mer.price}}</span>
            </mt-cell>
-         </p>
+         </div>
          
         <mt-cell title="订单总额">
              
@@ -87,6 +114,8 @@
            <p> 
              <mt-button type="primary" size="large" @click.native="backOrderList"> 返回订单列表 </mt-button>
            </p> 
+           
+           
         </div>
         
           
@@ -123,9 +152,11 @@
          
           <mt-field label="手机号" placeholder="填写您的手机号" v-model="mobile"></mt-field>
           <mt-field label="短信验证码" placeholder="短信验证码" type="code" v-model="code" @blur.native.capture="authen"></mt-field>
-          >
+          
            <mt-button type="primary" :disabled="button_disabled" @click="fetch_code">{{ this.fetch_code_title }}</mt-button>
-          </mt-field>
+          
+          
+          
        
          <mt-button type="primary" :disabled="authen_button_disabled" @click="authen">认证会员</mt-button>
          
@@ -143,12 +174,14 @@
       
       <mt-tab-container-item id="地址簿">
         <p></p>
-      <!--  地址簿中分列表和新增界面 --->
+      <!--  地址簿中分列表和新增界面 -->
        <div v-show="show_address_list">
        
        
-          <mt-cell is-link v-for="address in address_list" @click.native="addressActionsShow">
-             <span>收件人:{{ address.name }} 手机:{{ address.mobile }}  {{ address.province}} {{address.city }} {{address.district}} {{address.detail}} </span>
+          <mt-cell class="cell" is-link  v-for="address in address_list"  :title="'收件地址:'+address.province+''+address.city+''+address.district+''+address.detail" :label="'收件人:'+address.name+'|手机:'+address.mobile"
+          
+          @click.native="addressActionsShow(address.id)">
+             
              <img v-show="address.default_set == 2" slot="icon" src="../images/address_default.png">
          </mt-cell>
          
@@ -253,7 +286,7 @@ export default {
         
         slots:[{
           flex: 1,
-          values: ['待付款', '己付款', '己签收','全部'],
+          values: ['待付款', '己付款', '己签收','退款中','换货中','已退款','全部'],
           className: 'slot1',
           textAlign: 'center'
         }],
@@ -275,21 +308,97 @@ export default {
       },{
           name: '删除',
           method: this.address_del
-      }]
-
+      }],
+      
+      cur_address_id: null,
+      
+      //订单已关联的地址
+      selected_address:null,
+      //地址簿中设置为默认收件地址
+      default_set_address:null,
+      //设置地址为默认收件地址时，需要返回订单Tab
+      address_reset: false
 
       
       };
   },
   
   methods:{
-      addressActionsShow () {
+      addressActionsShow (id) {
          this.address_actions_show=true;
+         this.cur_address_id=id;
+         
       },
-      
+      //将当前地址设置为默认收件地址
       address_set_default () {
       
-        alert('--address set default--');
+       var json={"id":this.cur_address_id};
+       var __this=this;
+       var jsondata=JSON.stringify(json);
+       
+       Indicator.open({
+           text: '请求提交中...',
+           spinnerType: 'fading-circle'
+       });
+           $.ajax({
+           type:"POST",
+           contentType: "application/json; charset=utf-8",
+           url:__this.domain+"/address/setdefault",
+           data:jsondata,
+           datatype: "json",
+           success: function (message) 
+		   {
+			   var resMsg=message.resMsg;
+			   var resCode=message.resCode;
+			   Indicator.close();
+			    Toast({
+  	    		     message: resMsg,
+  	    		     position: 'middle',
+  	    		     duration: 1000
+  	    	     });
+			   if(resCode=='0')
+			   {
+				   //刷新地址列表
+                  __this.address_list.forEach(t=>{
+                    
+                    if(t.id != __this.cur_address_id){
+                       if(t.default_set==2){
+                          t.default_set=1;
+                       }
+                    }
+                    
+                    if(t.id == __this.cur_address_id){
+                        t.default_set=2;
+                    }
+                   
+                  
+                  });
+                  
+                  //刷新由订单详情加载的默认收件地址
+                  __this.default_set_address= __this.address_list.find(t=> t.default_set === 2);
+                  
+                  if(__this.address_reset){
+                    //重置订单立即看到更新，应回退到订单Tab
+                     __this.selected='订单';
+                     
+                  }
+				   
+			   }
+              
+            },
+            
+            error: function (message) 
+		    {
+                 Indicator.close();
+			     Toast({
+  	    		     message: '服务器异常',
+  	    		     position: 'middle',
+  	    		     duration: 1000
+  	    	     });
+  	    	    
+            }
+              
+         });
       },
       
       address_del () {
@@ -301,6 +410,8 @@ export default {
       adrress_edit () {
          alert('--address edit--');
       },
+      
+      //根据订单状态过滤
       queryOrder (picker, values) {
         
          this.filter_value=values[0];
@@ -315,6 +426,17 @@ export default {
          }
          if('己签收'==values[0].trim()){
            this.filter_orders=this.orders.filter(v => v.order_status === 5);
+         }
+         
+         if('退款中'==values[0].trim()){
+           this.filter_orders=this.orders.filter(v => v.order_status === 6);
+         }
+         
+         if('换货中'==values[0].trim()){
+           this.filter_orders=this.orders.filter(v => v.order_status === 7);
+         }
+         if('已退款'==values[0].trim()){
+           this.filter_orders=this.orders.filter(v => v.order_status === 8);
          }
          if('全部'==values[0].trim()){
            this.filter_orders=this.orders;
@@ -338,7 +460,6 @@ export default {
       //获取地址列表
    
         fetch_address_list () {
-           //alert('---fetch_address_list---');
            
           var __this=this;
           $.ajax({
@@ -354,7 +475,7 @@ export default {
 			   if(resCode == '0' ){
 			     
 			      __this.address_list=message.addresses;
-			      __this.filter_address_list=message.addresses;
+			     
 			      //alert('---addresses='+message.addresses);
 			     
 			   }else
@@ -402,13 +523,17 @@ export default {
     
    address_add () {
    
-     if(!this.cur_order.rec_address_id){
-     
-         this.selected='地址簿';
-     }
-       
-   
+     //if(!this.cur_order.rec_address_id)
+      this.selected='地址簿';
+      
    }, 
+   
+   // 重设收件地址
+   address_manage () {
+       
+       this.selected='地址簿';
+       this.address_reset=true;
+   },
     
     //提交新增地址按钮,新增成功后，刷新地址列表
    address_save () {
@@ -625,7 +750,7 @@ export default {
           //订单列表显示
           this.show_order_list=true;
       },
-       //获取订单详情 
+       //获取订单详情,地址列表
        detail (id,total_price) {
          
 
@@ -658,6 +783,12 @@ export default {
 			      __this.mers=message.mers;
 			      __this.cur_total_price=message.total_price;
 			      __this.cur_order=message.order;
+			      __this.address_list=message.addresses;
+			      __this.selected_address=message.selected_address;
+			      __this.default_set_address=message.default_address;
+			      alert('-address_list='+message.addresses);
+			      alert('-selected_address='+message.selected_address);
+			      alert('-default_set_address='+JSON.stringify(message.default_address));
 			   }else
 			   {
 			     Toast({
@@ -994,7 +1125,13 @@ export default {
 </script>
 
 <style scoped>
+.cell{
+  
+   padding:5px;
+   
+   
 
+},
  .option{
  
    font-weight:bold;font-size:1.1em;

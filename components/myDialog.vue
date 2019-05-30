@@ -244,6 +244,8 @@ export default {
            this.remain=target.num;
            this.symbol=target.symbol;
          }  
+         
+         this.total_price=this.price*this.count;
         
       },
       sayHello(){
