@@ -88,13 +88,6 @@ const Routers = [
     },
     
     {
-        path: '/action_win',
-        meta: {
-            title: 'Action Window'
-        },
-        component: (resolve) => require(['./components/action_window.vue'], resolve)
-    },
-    {
         path: '/modal',
         meta: {
             title: 'Modal'

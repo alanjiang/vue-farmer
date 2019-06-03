@@ -214,10 +214,10 @@
           <p></p>
          <mt-button type="primary" size="small" @click.native="backAddressList">返回地址列表</mt-button>
          
-         
-          
-         
+      
        </div>
+       
+       <AddressModify> </AddressModify>
        
            
       </mt-tab-container-item>
@@ -230,9 +230,11 @@
 
 import {field,Toast,Indicator,Picker,Actionsheet} from 'mint-ui';
 import $ from 'jquery';
-
+import AddressModify from './addressModify.vue';
 
 export default {
+
+  components:{AddressModify},
   name: 'My',
 
   data() {
@@ -264,7 +266,8 @@ export default {
       //当前订单对象
       cur_order:{},
       cur_total_price:null,
-      
+      //点击修改地址的当前地址对象
+      cur_address:{},
       //统一下单位的参数 
       unifiy_order:{appId:null, nonceStr:null, package:null,
                     signType:'MD5', paySign:null, total_fee:null
@@ -335,14 +338,17 @@ export default {
       },
       //将当前地址设置为默认收件地址,如果当前订单已加载，则将默认地址与订单绑定
       address_set_default () {
-       //alert(this.cur_address_id+","+this.default_set_address.id);
-       if(this.cur_address_id == this.default_set_address.id){
-         Toast({
+       
+       //用户没有浏览订单时直接设置地址
+       if(this.default_set_address){
+          if(this.cur_address_id == this.default_set_address.id){
+              Toast({
   	    		     message: '已经是默认收件地址',
   	    		     position: 'middle',
   	    		     duration: 1000
   	    	     });
-         return false;
+              return false;
+         }
        }
        var json=null;
        if(this.cur_order){
@@ -430,13 +436,58 @@ export default {
       },
       
       address_del () {
-      
-        
+     
+         var json={"id":this.cur_address_id};
+         var __this=this;
+         var jsondata=JSON.stringify(json);
+       
+          Indicator.open({
+              text: '请求提交中...',
+               spinnerType: 'fading-circle'
+          });
+           $.ajax({
+           type:"DELETE",
+           contentType: "application/json; charset=utf-8",
+           url:__this.domain+"/address/remove",
+           data:jsondata,
+           datatype: "json",
+           success: function (message) 
+		   {
+			   var resMsg=message.resMsg;
+			   var resCode=message.resCode;
+			   Indicator.close();
+			    Toast({
+  	    		     message: resMsg,
+  	    		     position: 'middle',
+  	    		     duration: 1000
+  	    	     });
+			     if(resCode=='0')
+			     {
+				   //刷新地址列表,重置默认的地址
+                   __this.fetch_address_list();
+				   
+			     }
+		    },
+		    
+		    error: function (jqXHR, textStatus, errorThrown) 
+		    {
+                
+			     Toast({
+  	    		  message: "貌似有点问题",
+  	    		  position: 'middle',
+  	    		  duration: 1000
+  	    	     });
+  	    	     
+            }
+         });
       
       },
       
-      adrress_edit () {
+      address_edit () {
         
+         this.cur_address=this.address_list.find(t=>t.id === this.cur_address_id);
+         //通知addressModify.vue组件打开修改窗口，并传值
+         this.$bus.emit('address_change',this.cur_address);
       },
       
       //根据订单状态过滤
@@ -708,6 +759,7 @@ export default {
   	    		     position: 'middle',
   	    		     duration: 1000
   	    	     });
+  	    	      __this.wechat_pay_btn_disabled=false;
 			   }
               
             },
@@ -720,7 +772,7 @@ export default {
   	    		     position: 'middle',
   	    		     duration: 1000
   	    	     });
-  	    	    this.wechat_pay_btn_disabled=false;
+  	    	    __this.wechat_pay_btn_disabled=false;
             }
               
          });	 
@@ -768,7 +820,15 @@ export default {
   	    		     duration: 1000
   	    	         });
 	        	     //__this.quryPayResult();
-	           }  
+	           }else{
+	           
+	                Toast({
+  	    		     message: '支付失败',
+  	    		     position: 'middle',
+  	    		     duration: 1000
+  	    	         });
+  	    	          __this.wechat_pay_btn_disabled=false;
+	           } 
 	       }
 	   ); 
 	},
@@ -1144,8 +1204,31 @@ export default {
                 
              });
              
+             this.$bus.on('addressUpdate', (val) => {
+             
+                 //alert('---addressUpdate='+val);
+                 this.address_list.forEach(t=>{
+                      if(t.id == val.id){
+                         //alert('--get address--');
+                         t.name=val.name;
+                         t.province=val.province;
+                         t.default_set=val.default_set;
+                         t.city=val.city;
+                         t.district=val.district;
+                         t.mobile=val.mobile;
+                         if(t.default_set == 2){
+                           this.default_set_address=t;
+                         }
+                         
+                      }
+                 });
+                 
+		     });
+             
             this.fetch_orders();
             this.fetch_address_list();
+            
+            
      }
   
 };

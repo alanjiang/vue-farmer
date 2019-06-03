@@ -91,7 +91,8 @@
                 this.cartList.forEach(item => {
                     cost += item.price * item.count;
                 });
-                return cost;
+                //return cost.toString().replace(/\B(?=(\d{3})+$)/g,',');
+                return cost.toFixed(2);
             }
         },
        
