@@ -158,6 +158,7 @@ import MyDialog from '../components/myDialog.vue';
 import My from '../components/my.vue';
 import { Navbar, TabItem } from 'mint-ui';
 import $ from 'jquery';
+import constants from '../utils/constants.js';
 export default {
   components:{Product,Cart,MyDialog,My},
  
@@ -327,7 +328,7 @@ export default {
       list:[],
       shop: {'shop_name':'','shop_address':'','shop_discrption':'','objectKey':''},
       headimgurl:'../images/wenbixia.jpg',
-      domain:'http://www.dianliaome.com'
+      domain: constants.domain
     };
   },
   

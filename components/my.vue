@@ -135,8 +135,9 @@
       
       <p></p>
       
-        <mt-cell :title="member_authen.country">
+        <mt-cell :title="member_authen.nickname">
             <img slot="icon" :src="member_authen.headimgurl" width="90" height="90">
+             
         </mt-cell>
        
      
@@ -154,17 +155,30 @@
         
         
          
-          <mt-field label="手机号" placeholder="填写您的手机号" v-model="mobile"></mt-field>
-          <mt-field label="短信验证码" placeholder="短信验证码" type="code" v-model="code" @blur.native.capture="authen"></mt-field>
-          
-           <mt-button type="primary" :disabled="button_disabled" @click="fetch_code">{{ this.fetch_code_title }}</mt-button>
+         
+          <mt-field label="手机号" placeholder="您的手机号" v-model="mobile"></mt-field>
           
           
           
-       
+          
+          <mt-field label="短信验证码" placeholder="验证码" type="text" v-model="code" @blur.native.capture="authen">
+          
+          <mt-button type="primary" size="small" :disabled="button_disabled" @click="fetch_code">{{ this.fetch_code_title }}</mt-button>
+          </mt-field>
+          
+         
          <mt-button type="primary" :disabled="authen_button_disabled" @click="authen">认证会员</mt-button>
          
         </div>
+        <div v-show="!mobile_binded">
+        
+        <mt-cell title="未验证手机号"></mt-cell>
+        
+        
+        </div>
+        
+         <mt-button  v-show="!mobile_binded" type="primary"  @click="show_member_authen">验证手机号</mt-button>
+         
         
         <div v-show="mobile_binded">
         
@@ -231,7 +245,7 @@
 import {field,Toast,Indicator,Picker,Actionsheet} from 'mint-ui';
 import $ from 'jquery';
 import AddressModify from './addressModify.vue';
-
+import constants from '../utils/constants.js';
 export default {
 
   components:{AddressModify},
@@ -239,7 +253,7 @@ export default {
 
   data() {
     return {
-     
+      domain: constants.domain,
       selected: '订单',
       address_added_show: false,
       wechat_authen_show: false,
@@ -253,10 +267,9 @@ export default {
       fetch_code_title: '获取验证码',
       button_disabled:false,
       authen_button_disabled:false,
-      domain:'http://www.dianliaome.com',
       //已绑定手机
       mobile_binded:true,
-      //近1天的订单列表
+      //近30天的订单列表
       orders:[],
       filter_orders:[],
       show_order_list:true,
@@ -325,12 +338,18 @@ export default {
       default_set_address:null,
       //设置地址为默认收件地址时，需要返回订单Tab
       address_reset: false
-
+      
       
       };
   },
   
   methods:{
+  
+      show_member_authen () {
+      
+         this.wechat_authen_show=true;
+         
+      },
       addressActionsShow (id) {
          this.address_actions_show=true;
          this.cur_address_id=id;
@@ -359,7 +378,7 @@ export default {
        var __this=this;
        var jsondata=JSON.stringify(json);
        
-      // alert('---jsondata='+jsondata);
+      // ('---jsondata='+jsondata);
        
        Indicator.open({
            text: '请求提交中...',
@@ -404,7 +423,7 @@ export default {
                   
                   //当前订单已加载
                   if(__this.cur_order){
-                   //重设的默认定单即为当前订单
+                  
                      __this.selected_address= __this.default_set_address;
 			      
 			      }
@@ -500,7 +519,9 @@ export default {
          }
          if('己付款'==values[0].trim()){
            
+           
            this.filter_orders=this.orders.filter(v => v.order_status === 2);
+           
            
          }
          if('己签收'==values[0].trim()){
@@ -555,7 +576,7 @@ export default {
 			     
 			      __this.address_list=message.addresses;
 			     
-			      //alert('---addresses='+message.addresses);
+			      
 			     
 			   }else
 			   {
@@ -813,13 +834,32 @@ export default {
 	           if(res.err_msg == "get_brand_wcpay_request:ok" ) 
 	           {
 					
-					
 					 Toast({
   	    		     message: '支付成功',
   	    		     position: 'middle',
-  	    		     duration: 1000
+  	    		     duration: 2000
   	    	         });
 	        	     //__this.quryPayResult();
+	        	     //1,当前订单状态为“已付款"
+	        	     __this.cur_order.order_status=2;
+	        	     //2,当前订单的重设收件地址不可用
+	        	     //3,订单列表中条件为“已付款”
+	        	     __this.filter_value='己付款';
+	        	     //4, 订单列表中将当前订单状态置为“已付款”
+	        	     __this.filter_orders.forEach(t=> {
+	        	           if(t.id == __this.cur_order.id){
+	        	               t.order_status=2;
+	        	           }
+	        	     });
+	        	      __this.orders.forEach(t=> {
+	        	           if(t.id == __this.cur_order.id){
+	        	               t.order_status=2;
+	        	           }
+	        	     });
+	        	     
+	        	     __this.filter_orders=this.orders.filter(v => v.order_status === 2);
+           
+	        	         
 	           }else{
 	           
 	                Toast({

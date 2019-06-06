@@ -63,6 +63,7 @@
 <script>
     import { Navbar, Toast,Indicator } from 'mint-ui';
     import $ from 'jquery';
+    import constants from '../utils/constants.js';
     export default {
       data () {
             return {
@@ -74,7 +75,7 @@
                 
                 member: null,
                 
-                domain:'http://www.dianliaome.com'
+                domain: constants.domain
                 
             }
         },
@@ -210,7 +211,10 @@
   	    	    });
 			   if(resCode=='0') 
 			   {
-			   
+			       //清除购物车清单
+			       
+			       __this.cartList=[];
+			       localStorage.setItem("cartList",null);
 			       //向FootBar.vue发事件，切换至“我的"
                    __this.$bus.emit('showTab','我的');
                    
