@@ -49,9 +49,11 @@
         <div v-show="show_order_detail" >
           
         
-         <mt-cell v-if="address_list.length" title="重设收件地址" is-link @click.native="address_manage">
-            <img slot="icon" src="../images/address_manage.png">
-        </mt-cell> 
+         <div v-if="cur_order.order_status == 1">
+           <mt-cell v-if="address_list.length" title="重设收件地址" is-link @click.native="address_manage">
+              <img slot="icon" src="../images/address_manage.png">
+          </mt-cell> 
+        </div>
         <mt-cell v-else title="新增收件地址" is-link @click.native="address_add">
             <img slot="icon" src="../images/address_add.png">
         </mt-cell> 
@@ -843,21 +845,17 @@ export default {
 	        	     //1,当前订单状态为“已付款"
 	        	     __this.cur_order.order_status=2;
 	        	     //2,当前订单的重设收件地址不可用
+	        	     
 	        	     //3,订单列表中条件为“已付款”
 	        	     __this.filter_value='己付款';
 	        	     //4, 订单列表中将当前订单状态置为“已付款”
-	        	     __this.filter_orders.forEach(t=> {
-	        	           if(t.id == __this.cur_order.id){
-	        	               t.order_status=2;
-	        	           }
-	        	     });
 	        	      __this.orders.forEach(t=> {
 	        	           if(t.id == __this.cur_order.id){
 	        	               t.order_status=2;
 	        	           }
 	        	     });
 	        	     
-	        	     __this.filter_orders=this.orders.filter(v => v.order_status === 2);
+	        	     __this.filter_orders=__this.orders.filter(v => v.order_status === 2);
            
 	        	         
 	           }else{
