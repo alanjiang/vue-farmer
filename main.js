@@ -8,7 +8,9 @@ import product_data from './utils/product.js';
 
 import menus from './utils/menus.js';
 import categorys from './utils/categorys';
+//import { Field,Toast,Button,Indicator,Navbar,Cell,Picker,ActionSheet}  from 'mint-ui';
 import Mint from 'mint-ui';
+import {Toast} from 'mint-ui';
 import 'mint-ui/lib/style.css'; 
 import VueBus from 'vue-bus';
 
@@ -28,12 +30,14 @@ Vue.component('v-distpicker', VDistpicker);
 
 Vue.use(Vuex);
 Vue.use(VueRouter);
+//Field,Toast,Button,Indicator,Navbar,Cell,Picker,ActionSheet
 Vue.use(Mint);
+
+
 Vue.use(VueBus);
 
 Vue.prototype.$http = axios;
 
-import {Toast } from 'mint-ui';
 // 路由配置
 const Routers = [
 	 {
@@ -160,11 +164,12 @@ const mutations = {
 	},
 	// 添加到购物车,detail.vue中调用
     addCart (state, params) {
+	   
+		
+		var cars=[];
 	
-		var cars=JSON.parse(localStorage.getItem("cartList"));
-	
-		if(cars==null){
-			cars=[];
+		if(localStorage.getItem("cartList") != null){
+			cars=JSON.parse(localStorage.getItem("cartList"));
 		}
 		
 		var id=params.id;
@@ -174,6 +179,7 @@ const mutations = {
         if(localStorage.getItem("productList")!=null){
             	products= JSON.parse(localStorage.getItem("productList"));
         }
+        
         
         if(products==null){
         	alert('请升级您的浏览器')

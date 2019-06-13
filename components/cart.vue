@@ -252,6 +252,7 @@
          created(){
               // 监听来自myDialog.vue中加入购物车动作事件，由$emit发出 
              this.$bus.on('cartChange', (val) => {
+               alert('--rev cartChange--');
                //让购物车中的商品及时更新
               this.cartList=JSON.parse(localStorage.getItem("cartList"));
                 

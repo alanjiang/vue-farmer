@@ -172,12 +172,14 @@ export default {
                 return;
              }
              
-             //alert('---addToCart=>'+this.symbol);
+             
              var params={'id':this.product.id,'symbol':this.symbol,'count':this.count};
              this.closeMask();
              //调用main.js中的函数
+             alert('---call main.js'+JSON.stringify(params));
              this.$store.commit('addCart', params);
-             //调用cart.vue组件中的this.$bus.on('cartChage',..)事件
+             alert('---call cartChange');
+             //调用cart.vue组件中的this.$bus.on('cartChange',..)事件
              this.$bus.emit('cartChange',params);
           
         },

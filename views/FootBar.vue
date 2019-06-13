@@ -94,9 +94,14 @@
               
               
         <mt-tab-container-item id="客服">
+           <!--
            <router-link to="/action_win">Action Window</router-link>
            <router-link to="/modal">Modal</router-link>
+           -->
            
+           <Kefu></Kefu>
+           
+           <ChatWin></ChatWin>
            
         </mt-tab-container-item>
         <mt-tab-container-item id="门店" v-model="shop">
@@ -156,11 +161,13 @@ import Product from '../components/product.vue';
 import Cart from '../components/cart.vue';
 import MyDialog from '../components/myDialog.vue';
 import My from '../components/my.vue';
+import Kefu from '../components/kefu.vue';
+import ChatWin from '../components/chatWin.vue';
 import { Navbar, TabItem } from 'mint-ui';
 import $ from 'jquery';
 import constants from '../utils/constants.js';
 export default {
-  components:{Product,Cart,MyDialog,My},
+  components:{Product,Cart,MyDialog,My,Kefu,ChatWin},
  
   computed:{
      list_old () {
