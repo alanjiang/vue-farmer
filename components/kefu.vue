@@ -6,7 +6,7 @@
        <mt-cell :member_authen="member_authen"  v-if="kefuList.length" v-for="kefu in kefuList"   :title="'微信号:'+kefu.username+''"  :label="'电话：'+kefu.mobile+''"  is-link>
             <img slot="icon" :src="kefu.headimgurl" width="80" height="80">
             
-            
+            <!--
             <mt-button   v-if="member_authen.unionid == kefu.unionid"  type="primary" size="small"  @click="openChatWin(kefu.unionid)">
             
              打开客服窗口 
@@ -14,6 +14,13 @@
             </mt-button>
             
              <mt-button  v-else  type="primary" size="small"  @click="openChatWin(kefu.unionid)">
+            
+            咨询 
+            
+            </mt-button>
+            -->
+            
+            <mt-button    type="primary" size="small"  @click="openChatWin(kefu.unionid)">
             
             咨询 
             

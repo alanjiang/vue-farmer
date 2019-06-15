@@ -3,12 +3,24 @@
 <div>
 
 
-<hsy-dialog class="confirm" v-model="chat_win_visible" style="width:350px">
-  <div slot="title" style="width:350px">客服聊天</div>
-  <div slot="body" style="width:350px">
+<hsy-dialog class="confirm" v-model="chat_win_visible" style="width:340px">
+  <div slot="title" style="width:340px">客服聊天</div>
+  <div slot="body" style="width:340px">
     <div>
     
-       <div id="msg" class="msg-scroll"></div>
+       <div id="msg" class="msg-scroll">
+       
+            <p v-for="msg in msgList">
+            
+               <img :src="msg.headimgurl" width=30 height=30>&nbsp;
+               <b><font color="red">{{msg.nickname}}</font></b>&nbsp;<font color="#636363">{{msg.sendtime}}</font>
+               <mt-button :msg="msg" type="primary" size="small" @click.native="answer(msg.unionid)">和我聊</mt-button><br>
+               {{msg.msgtxt}}
+            </p>
+       
+       </div>
+       
+      
        <mt-field label="留言"  type="textarea"  v-model="ws_msg" ></mt-field>
        <p style="text-align:center;">  
             <mt-button type="primary" size="large"  @click.native="sendMsgToKefuAndMyself">发送</mt-button>
@@ -41,30 +53,39 @@ export default {
       stompClient:null,
       member_authen:null,
       selected_client_id:null,
-      selected_kefu_id:null,       
+      selected_kefu_id:null,
+      msgList:[]
+             
     }
   },
   methods: {
       
+     answer (id) {
      
-     broadCast (wsMessage) {
-      
-        var json=JSON.parse(wsMessage);
-        var tmp= document.createElement("p");
-        tmp.innerHTML='<img src="'+json.headimgurl+'" width=30 height=30 >&nbsp;<b><font color="red">'+json.nickname+'</font></b>&nbsp;<font color="#636363">'+json.sendtime+'</font><br>'+json.msgtxt;
-        var msgDiv=document.getElementById("msg");
-        msgDiv.appendChild(tmp);
-        msgDiv.scrollTop = msgDiv.scrollHeight;
-     
+       alert('--answer id='+id);
      },
      
-     sendMsg () {
+     //广播消息
+     broadCast (wsMessage) {
+      
+      
+        var json=JSON.parse(wsMessage);
+        
+        if(json.unionid == this.member_authen.unionid || json.destination_unionid == this.member_authen.unionid)
+        {
+           this.msgList.push(json);
+           msgDiv.scrollTop = msgDiv.scrollHeight;
+        }
+     },
      
-      var message={   "unionid":this.member_authen.unionid,
+     //打开客服咨询窗口，连接socket时发送一条问候消息,消息仅客服与发送的用户可以可见
+     connectMsg () {
+     
+         var message={ "destination_unionid":this.selected_kefu_id,
+                       "unionid":this.member_authen.unionid,
                        "nickname":this.member_authen.nickname,
                        "headimgurl":this.member_authen.headimgurl,
                        "msgtxt":this.ws_msg};
-        
        
          this.stompClient.send("/app/hello", {}, JSON.stringify(message));
      
@@ -172,7 +193,7 @@ export default {
   	    		  position: 'middle',
   	    		  duration: 1000
   	    	     });
-                 this.clearDiv('msg');
+                 this.msgList=[];
                  this.disConnectSocket();
                  
               }
@@ -199,6 +220,7 @@ export default {
          //将unionid作为用户标识
          __this.stompClient.connect({"name":__this.member_authen.unionid}, function (frame) {
          //订阅有新人加入消息,不需要经过服务器处理
+         
           __this.stompClient.subscribe('/topic/greetings', function (socketMessage) {
                 
                  __this.broadCast(socketMessage.body);
@@ -212,7 +234,7 @@ export default {
           });
           
              
-             __this.sendMsg();
+             __this.connectMsg();
               
           
           });
@@ -226,7 +248,7 @@ export default {
           this.$bus.on('memberAuthenChange', (val) => {
                
                this.member_authen=val;
-               //alert('---member='+JSON.stringify(this.member_authen));
+               
                 
          });    
   
@@ -251,4 +273,22 @@ export default {
    overflow:auto;
 
 }
+
+
+.chat-button { /* 按钮美化 */
+	width: 120px; /* 宽度 */
+	height: 30px; /* 高度 */
+	border-width: 0px; /* 边框宽度 */
+	border-radius: 3px; /* 边框半径 */
+	background: #1E90FF; /* 背景颜色 */
+	cursor: pointer; /* 鼠标移入按钮范围时出现手势 */
+	outline: none; /* 不显示轮廓线 */
+	font-family: Microsoft YaHei; /* 设置字体 */
+	color: white; /* 字体颜色 */
+	font-size: 13px; /* 字体大小 */
+}
+.chat-button :hover { /* 鼠标移入按钮范围时改变颜色 */
+	background: #5599FF;
+}
+
 </style>

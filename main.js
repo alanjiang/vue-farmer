@@ -380,7 +380,7 @@ Vue.prototype.image_auto = function (maxWidth,maxHeight,objImg){
 
 	var img = new Image();
     img.src = objImg.src;
-    alert('--img src='+img.src);
+    //alert('--img src='+img.src);
     var hRatio;
     var wRatio;
     var Ratio = 1;
