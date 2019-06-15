@@ -40,7 +40,8 @@ export default {
       ws_msg:null,
       stompClient:null,
       member_authen:null,
-      selected_client_id:null       
+      selected_client_id:null,
+      selected_kefu_id:null,       
     }
   },
   methods: {
@@ -50,7 +51,7 @@ export default {
       
         var json=JSON.parse(wsMessage);
         var tmp= document.createElement("p");
-        tmp.innerHTML='<img src="'+json.headimgurl+'" width=30 height=30 >&nbsp;<b><font color="red">'+json.nickname+'</font></b><br>'+json.msgtxt;
+        tmp.innerHTML='<img src="'+json.headimgurl+'" width=30 height=30 >&nbsp;<b><font color="red">'+json.nickname+'</font></b>&nbsp;<font color="#636363">'+json.sendtime+'</font><br>'+json.msgtxt;
         var msgDiv=document.getElementById("msg");
         msgDiv.appendChild(tmp);
         msgDiv.scrollTop = msgDiv.scrollHeight;
@@ -59,7 +60,7 @@ export default {
      
      sendMsg () {
      
-      var message={ "unionid":this.member_authen.unionid,
+      var message={   "unionid":this.member_authen.unionid,
                        "nickname":this.member_authen.nickname,
                        "headimgurl":this.member_authen.headimgurl,
                        "msgtxt":this.ws_msg};
@@ -81,16 +82,17 @@ export default {
   	    	     return false;
           }
           
+           //alert('--this.selected_kefu_id='+this.selected_kefu_id);
          
            var message={ 
-                       "destination_unionid":this.member_authen.unionid,
+                       "destination_unionid":this.selected_kefu_id,
                        "unionid":this.member_authen.unionid,
                        "nickname":this.member_authen.nickname,
                        "headimgurl":this.member_authen.headimgurl,
                        "msgtxt":this.ws_msg};
          
           var jsondata=JSON.stringify(message);
-          alert('--jsondata='+jsondata);
+          //alert('--jsondata='+jsondata);
           var __this=this;
           //通过http触发服务器向/user/{unionid}/queue/message订阅者发送消息
           $.ajax({
@@ -184,8 +186,9 @@ export default {
  
       // 监听来自kefu.vue中打开聊天窗口的事件 
       this.$bus.on('open_chat_win', (val) => {
-      
          
+         // alert('--val='+val);
+         this.selected_kefu_id=val;
          //打开聊天窗口 
          this.chat_win_visible=true;
          var socket = new SockJS('/gs-guide-websocket');
@@ -195,7 +198,6 @@ export default {
          var __this=this;
          //将unionid作为用户标识
          __this.stompClient.connect({"name":__this.member_authen.unionid}, function (frame) {
-        
          //订阅有新人加入消息,不需要经过服务器处理
           __this.stompClient.subscribe('/topic/greetings', function (socketMessage) {
                 
@@ -204,11 +206,7 @@ export default {
           
           //订阅服务器发给点到点用户的消息
           __this.stompClient.subscribe('/user/queue/message', function (socketMessage) {
-                
-                alert('--rec :'+socketMessage);
-                
-                alert('--rec :'+socketMessage.body);
-                
+               
                 
                  __this.broadCast(socketMessage.body);
           });

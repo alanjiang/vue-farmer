@@ -2,11 +2,22 @@
     <div>
        
        
-       
-       
-       <mt-cell v-if="kefuList.length" v-for="kefu in kefuList"   :title="'微信号:'+kefu.username+''"  :label="'电话：'+kefu.mobile+''"  is-link>
+
+       <mt-cell :member_authen="member_authen"  v-if="kefuList.length" v-for="kefu in kefuList"   :title="'微信号:'+kefu.username+''"  :label="'电话：'+kefu.mobile+''"  is-link>
             <img slot="icon" :src="kefu.headimgurl" width="80" height="80">
-            <mt-button type="primary" size="small"  @click="openChatWin">咨询</mt-button>
+            
+            
+            <mt-button   v-if="member_authen.unionid == kefu.unionid"  type="primary" size="small"  @click="openChatWin(kefu.unionid)">
+            
+             打开客服窗口 
+            
+            </mt-button>
+            
+             <mt-button  v-else  type="primary" size="small"  @click="openChatWin(kefu.unionid)">
+            
+            咨询 
+            
+            </mt-button>
        
         </mt-cell> 
        
@@ -33,7 +44,8 @@
       data () {
         return {
              domain: constants.domain,
-             kefuList:[]
+             kefuList:[],
+             member_authen: JSON.parse(localStorage.getItem("global.member_authen"))
             }
        },
         
@@ -85,11 +97,12 @@
                 
       },
       
-      openChatWin () {
+      openChatWin (kefuid) {
       
-          //alert('--websocket msg send--');
+         //alert('-pass ='+kefuid);
+          //通知子组件chatWin.vue,并把客服务unionid传过去
           
-          this.$bus.emit('open_chat_win','');
+          this.$bus.emit('open_chat_win',kefuid);
  
       }
       
