@@ -165,13 +165,14 @@ const mutations = {
 	// 添加到购物车,detail.vue中调用
     addCart (state, params) {
 	   
-		
+		//alert('--main.js addCart=>'+localStorage.getItem("cartList"));
 		var cars=[];
 	
-		if(localStorage.getItem("cartList") != null){
+		if(localStorage.getItem("cartList")){
 			cars=JSON.parse(localStorage.getItem("cartList"));
+			//alert('--carts 1='+cars.length);
 		}
-		
+		//alert('--carts 2='+cars.length);
 		var id=params.id;
 		var symbol=params.symbol;
 		var count=params.count;

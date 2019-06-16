@@ -214,7 +214,7 @@
 			       //清除购物车清单
 			       
 			       __this.cartList=[];
-			       localStorage.setItem("cartList",null);
+			       localStorage.setItem("cartList",[]);
 			       //向FootBar.vue发事件，切换至“我的"
                    __this.$bus.emit('showTab','我的');
                    

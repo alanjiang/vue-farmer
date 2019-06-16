@@ -208,7 +208,7 @@ export default {
       // 监听来自kefu.vue中打开聊天窗口的事件 
       this.$bus.on('open_chat_win', (val) => {
          
-         // alert('--val='+val);
+         //alert('--val='+val);
          this.selected_kefu_id=val;
          //打开聊天窗口 
          this.chat_win_visible=true;
@@ -224,7 +224,18 @@ export default {
           __this.stompClient.subscribe('/topic/greetings', function (socketMessage) {
                 
                  __this.broadCast(socketMessage.body);
-          });
+          },function(err){
+                  Toast({
+  	    		  message: "与服务器建立连接失败，请稍后再试",
+  	    		  position: 'middle',
+  	    		  duration: 1000
+  	    	       });
+              
+              
+           }
+          
+          
+          );
           
           //订阅服务器发给点到点用户的消息
           __this.stompClient.subscribe('/user/queue/message', function (socketMessage) {
