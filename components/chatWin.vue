@@ -14,13 +14,15 @@
             
                <img :src="msg.headimgurl" width=30 height=30>&nbsp;
                <b><font color="red">{{msg.nickname}}</font></b>&nbsp;<font color="#636363">{{msg.sendtime}}</font>
-               <mt-button :msg="msg" type="primary" size="small" @click.native="answer(msg.unionid)">和我聊</mt-button><br>
+               <mt-button  :msg="msg" type="primary" size="small" @click.native="answer(msg.unionid)">和我聊</mt-button><br>
                {{msg.msgtxt}}
             </p>
        
        </div>
        
-      
+       
+   
+      <p v-if="this.cur_user">当前回复用户: {{this.cur_user.nickname }} &nbsp;<img :src="this.cur_user.headimgurl" width="30" height="30"></p>
        <mt-field label="留言"  type="textarea"  v-model="ws_msg" ></mt-field>
        <p style="text-align:center;">  
             <mt-button type="primary" size="large"  @click.native="sendMsgToKefuAndMyself">发送</mt-button>
@@ -45,6 +47,7 @@ import SockJS from  'sockjs-client';
 import  Stomp from 'stompjs';
 import $ from 'jquery';
 export default {
+
   data() {
     return {
       chat_win_visible:false,
@@ -52,17 +55,32 @@ export default {
       ws_msg:null,
       stompClient:null,
       member_authen:null,
-      selected_client_id:null,
+      
       selected_kefu_id:null,
-      msgList:[]
-             
+      msgList:[],
+      //选择回复的用户ID
+      selected_user_id:null,
+      
+      cur_kefu:null,
+      
+      cur_user:null
+         
     }
   },
+  
+ 
   methods: {
       
+     //选择聊天的用户ID
      answer (id) {
      
-       alert('--answer id='+id);
+       
+       this.selected_user_id=id;
+       //说明是客服的点击
+       if(this.selected_kefu_id == this.member_authen.unionid){
+          this.getUser(id);
+       }
+       
      },
      
      //广播消息
@@ -74,7 +92,12 @@ export default {
         if(json.unionid == this.member_authen.unionid || json.destination_unionid == this.member_authen.unionid)
         {
            this.msgList.push(json);
-           msgDiv.scrollTop = msgDiv.scrollHeight;
+           
+           this.$nextTick(() => {
+               var msgDiv=document.getElementById("msg");
+               msgDiv.scrollTop = msgDiv.scrollHeight+5;
+          });
+           
         }
      },
      
@@ -91,6 +114,18 @@ export default {
      
      },
      
+     leftMsg () {
+     
+         var message={ "destination_unionid":this.selected_kefu_id,
+                       "unionid":this.member_authen.unionid,
+                       "nickname":this.member_authen.nickname,
+                       "headimgurl":this.member_authen.headimgurl,
+                       "msgtxt":"["+this.member_authen.nickname+"]我中断了聊天,暂时离开"};
+       
+         this.stompClient.send("/app/hello", {}, JSON.stringify(message));
+     
+     },
+     //如果是客服回复，则必须选择一个用户进行进行回复
      sendMsgToKefuAndMyself () {
      
           if(!this.ws_msg){
@@ -103,15 +138,45 @@ export default {
   	    	     return false;
           }
           
-           //alert('--this.selected_kefu_id='+this.selected_kefu_id);
-         
-           var message={ 
+           var message={};
+           
+           //判断是用户的身份，普通用户和客服
+           
+           if(this.member_authen.unionid == this.selected_kefu_id){
+           
+              if(this.selected_user_id == null ){
+              
+                  Toast({
+  	    		  message: '请选择一个聊天的用户',
+  	    		  position: 'middle',
+  	    		  duration: 500
+  	    	     });
+  	    	     
+  	    	     return false;
+              }else{
+              
+                message={ 
+                       "destination_unionid":this.selected_user_id,
+                       "unionid":this.member_authen.unionid,
+                       "nickname":this.member_authen.nickname,
+                       "headimgurl":this.member_authen.headimgurl,
+                       "msgtxt":this.ws_msg};
+              
+              }
+              
+           
+           }else{
+           
+             message={ 
                        "destination_unionid":this.selected_kefu_id,
                        "unionid":this.member_authen.unionid,
                        "nickname":this.member_authen.nickname,
                        "headimgurl":this.member_authen.headimgurl,
                        "msgtxt":this.ws_msg};
          
+            }
+         
+           
           var jsondata=JSON.stringify(message);
           //alert('--jsondata='+jsondata);
           var __this=this;
@@ -171,13 +236,39 @@ export default {
      
      disConnectSocket () {
      
+        this.leftMsg();
+     
         if (this.stompClient !== null) {
             this.stompClient.disconnect();
         }
      
+     },
+     
+     getUser (userid) {
+     
+        
+         this.msgList.forEach(t=>{
+           
+            if(t.unionid == userid ){
+             
+               this.cur_user=t;
+              
+            }
+         });
+     },
+     
+     getKefu (kefuid) {
+     
+     
+         this.msgList.forEach(t=>{
+           
+            if(t.unionid == kefuid ){
+             
+               this.cur_kefu=t;
+              
+            }
+         });
      }
-     
-     
      
   },
   
@@ -208,8 +299,9 @@ export default {
       // 监听来自kefu.vue中打开聊天窗口的事件 
       this.$bus.on('open_chat_win', (val) => {
          
-         //alert('--val='+val);
+        
          this.selected_kefu_id=val;
+         
          //打开聊天窗口 
          this.chat_win_visible=true;
          var socket = new SockJS('/gs-guide-websocket');
@@ -261,7 +353,9 @@ export default {
                this.member_authen=val;
                
                 
-         });    
+         });
+         
+             
   
   }
   
