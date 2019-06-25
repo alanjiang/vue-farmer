@@ -10,7 +10,7 @@
     
        <div id="msg" class="msg-scroll">
        
-            <p v-for="msg in msgList">
+            <p v-for="msg in msgList" :msgList="msgList">
             
                <img :src="msg.headimgurl" width=30 height=30>&nbsp;
                <b><font color="red">{{msg.nickname}}</font></b>&nbsp;<font color="#636363">{{msg.sendtime}}</font>
@@ -21,11 +21,17 @@
        </div>
        
        
+       
+       <p><cPage :pageOption="pageOption" :jumpTo="jumpTo"></cPage></p>
+       <div style="clear:both;height:1px;"></div>
       <p style="text-align:center;">  
-            <mt-button type="primary" size="large"  @click.native="getHistoryMessages">加载历史消息</mt-button>
+            <mt-button type="primary" size="small"  @click.native="getHistoryMessages">消息刷新</mt-button>
        </p> 
       <p v-if="this.cur_user">当前回复用户: {{this.cur_user.nickname }} &nbsp;<img :src="this.cur_user.headimgurl" width="30" height="30"></p>
-       <mt-field label="留言"  type="textarea"  v-model="ws_msg" ></mt-field>
+       
+       <p>
+       <mt-field label="留言"  type="textarea"  style="border:1px solid gray;" v-model="ws_msg" ></mt-field>
+       </p>
        <p style="text-align:center;">  
             <mt-button type="primary" size="large"  @click.native="sendMsgToKefuAndMyself">发送</mt-button>
        </p> 
@@ -68,14 +74,26 @@ export default {
       cur_user:null,
       //历史消息加载
       pageNo:1,
-      totalPage:1
-         
+      totalPage:1,
+      
+      pageOption: {
+         pageNo: 1, // 当前页码
+         pageSize: 0, // 每页多少条
+         total: 0, // 总共多少条
+         totalPage: 0 // 总共多少页
       }
+         
+     }
   },
   
  
   methods: {
   
+      jumpTo(pageNo){
+        this.pageOption.pageNo = parseInt(pageNo);
+        this.getHistoryMessages();
+      },
+    
      //加载历史消息
      
       getHistoryMessages () { 
@@ -85,7 +103,7 @@ export default {
            spinnerType: 'fading-circle'
           });
            
-           this.msgList=[];//将当前消息列表清空
+           this.msgList=[];
            var message={ 
                        "unionid":this.member_authen.unionid,
                        "nickname":this.member_authen.nickname,
@@ -99,7 +117,7 @@ export default {
            $.ajax({
               type:"POST",
               contentType: "application/json; charset=utf-8",
-              url:__this.domain+"/getHistoryMessages/"+__this.pageNo,
+              url:__this.domain+"/getHistoryMessages/"+__this.pageOption.pageNo,
               data:jsondata,
               datatype: "json",
               success: function (message) 
@@ -110,18 +128,23 @@ export default {
 			   Indicator.close();
 			   if(resCode == '0' ){
 			  
+			     
+			     
 			     message.results.forEach(t =>{
 			        __this.msgList.push(t);
 			     });
 			     
-			      
-			      __this.pageNo=message.pageNo;
-			      __this.totalPage=message.totalPage;
-			      
+			     
+			      __this.pageOption.pageNo=message.pageNo;
+			      __this.pageOption.totalPage=message.totalPage;
+			      __this.pageOption.total=message.total;
+			      __this.pageOption.pageSize=message.pageSize;
 			      __this.$nextTick(() => {
                     var msgDiv=document.getElementById("msg");
                     msgDiv.scrollTop = msgDiv.scrollHeight+5;
                   });
+                  
+                  
 			      
 			   }else
 			   {

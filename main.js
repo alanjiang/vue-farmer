@@ -18,10 +18,15 @@ import VDistpicker from 'v-distpicker';
 import Dialog from 'hsy-vue-dialog';
 
 //引入样式
-import 'vue-easytable/libs/themes-base/index.css';
-import {VTable,VPagination} from 'vue-easytable';
-Vue.component(VTable.name, VTable);
-Vue.component(VPagination.name, VPagination);
+//import 'vue-easytable/libs/themes-base/index.css';
+//import {VTable,VPagination} from 'vue-easytable';
+//Vue.component(VTable.name, VTable);
+//Vue.component(VPagination.name, VPagination);
+//分页组件
+import CPage from 'vue-c-page';
+
+Vue.use(CPage);
+
 
 Vue.use(Dialog);
 
