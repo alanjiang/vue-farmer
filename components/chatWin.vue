@@ -21,7 +21,9 @@
        </div>
        
        
-   
+      <p style="text-align:center;">  
+            <mt-button type="primary" size="large"  @click.native="getHistoryMessages">加载历史消息</mt-button>
+       </p> 
       <p v-if="this.cur_user">当前回复用户: {{this.cur_user.nickname }} &nbsp;<img :src="this.cur_user.headimgurl" width="30" height="30"></p>
        <mt-field label="留言"  type="textarea"  v-model="ws_msg" ></mt-field>
        <p style="text-align:center;">  
@@ -41,7 +43,7 @@
 
 <script>
 
-import {Button,Field,Toast} from 'mint-ui';
+import {Button,Field,Toast,Indicator} from 'mint-ui';
 import constants from '../utils/constants.js';
 import SockJS from  'sockjs-client';
 import  Stomp from 'stompjs';
@@ -63,18 +65,92 @@ export default {
       
       cur_kefu:null,
       
-      cur_user:null
+      cur_user:null,
+      //历史消息加载
+      pageNo:1,
+      totalPage:1
          
-    }
+      }
   },
   
  
   methods: {
-      
+  
+     //加载历史消息
+     
+      getHistoryMessages () { 
+           
+           Indicator.open({
+           text: '历史消息加载中...',
+           spinnerType: 'fading-circle'
+          });
+           
+           this.msgList=[];//将当前消息列表清空
+           var message={ 
+                       "unionid":this.member_authen.unionid,
+                       "nickname":this.member_authen.nickname,
+                       "headimgurl":this.member_authen.headimgurl
+                    }
+                       
+         
+           var jsondata=JSON.stringify(message);
+         
+           var __this=this;
+           $.ajax({
+              type:"POST",
+              contentType: "application/json; charset=utf-8",
+              url:__this.domain+"/getHistoryMessages/"+__this.pageNo,
+              data:jsondata,
+              datatype: "json",
+              success: function (message) 
+		      {  
+		       
+			   var resMsg=message.resMsg;
+			   var resCode=message.resCode;
+			   Indicator.close();
+			   if(resCode == '0' ){
+			  
+			     message.results.forEach(t =>{
+			        __this.msgList.push(t);
+			     });
+			     
+			      
+			      __this.pageNo=message.pageNo;
+			      __this.totalPage=message.totalPage;
+			      
+			      __this.$nextTick(() => {
+                    var msgDiv=document.getElementById("msg");
+                    msgDiv.scrollTop = msgDiv.scrollHeight+5;
+                  });
+			      
+			   }else
+			   {
+			     
+			     Toast({
+  	    		  message: '历史消息未成功加载',
+  	    		  position: 'middle',
+  	    		  duration: 1000
+  	    	      });
+			   }
+			   
+            },
+            
+            error: function (jqXHR, textStatus, errorThrown) 
+		    {
+		         Indicator.close();
+			     Toast({
+  	    		  message: "貌似有点问题",
+  	    		  position: 'middle',
+  	    		  duration: 1000
+  	    	     });  
+            }
+             
+         });
+                
+      },
      //选择聊天的用户ID
      answer (id) {
-     
-       
+    
        this.selected_user_id=id;
        //说明是客服的点击
        if(this.selected_kefu_id == this.member_authen.unionid){
@@ -109,7 +185,7 @@ export default {
                        "nickname":this.member_authen.nickname,
                        "headimgurl":this.member_authen.headimgurl,
                        "msgtxt":this.ws_msg};
-       
+         //先加载历史消息
          this.stompClient.send("/app/hello", {}, JSON.stringify(message));
      
      },
@@ -120,10 +196,10 @@ export default {
                        "unionid":this.member_authen.unionid,
                        "nickname":this.member_authen.nickname,
                        "headimgurl":this.member_authen.headimgurl,
-                       "msgtxt":"["+this.member_authen.nickname+"]我中断了聊天,暂时离开"};
+                       "msgtxt":"["+this.member_authen.nickname+"]中断了聊天,暂时离开"};
        
          this.stompClient.send("/app/hello", {}, JSON.stringify(message));
-     
+         
      },
      //如果是客服回复，则必须选择一个用户进行进行回复
      sendMsgToKefuAndMyself () {
@@ -244,6 +320,7 @@ export default {
      
      },
      
+     //获取当前用户cur_user对象
      getUser (userid) {
      
         
@@ -256,7 +333,7 @@ export default {
             }
          });
      },
-     
+     //获取当前客服cur_kefu对象
      getKefu (kefuid) {
      
      
@@ -324,10 +401,9 @@ export default {
   	    	       });
               
               
-           }
+           });
           
           
-          );
           
           //订阅服务器发给点到点用户的消息
           __this.stompClient.subscribe('/user/queue/message', function (socketMessage) {
@@ -341,13 +417,15 @@ export default {
               
           
           });
+          //结束订阅服务器发给点到点用户的消息        
                    
-                   
+            
                    
          });
+         
+         // 结束监听来自kefu.vue中打开聊天窗口的事件 
              
-          
-          
+ 
           this.$bus.on('memberAuthenChange', (val) => {
                
                this.member_authen=val;

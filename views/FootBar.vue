@@ -195,11 +195,10 @@ export default {
   },
   methods:{
     
-    
-    
+   
     fetchProductList(){
          
-          
+          //alert('--fetchProductList--'+this.domain);
           var __this=this;
          
           $.ajax({
@@ -212,9 +211,8 @@ export default {
 		   {
 			   var resMsg=message.resMsg;
 			   var resCode=message.resCode;
-			   //console.log('--Member_authen='+JSON.stringify(message.member_authen));
-			   //console.log('--shop='+JSON.stringify(message.shop));
-			   //console.log('--member='+message.member);
+			   
+			   
 			   message.items.forEach(t=>{
 			      __this.list.push(t);
 			   });
