@@ -104,7 +104,7 @@
                   
                    return JSON.parse(localStorage.getItem("cartList"));
                 }
-                  //alert('--cartList='+localStorage.getItem("cartList"));
+                  alert('--cartList='+localStorage.getItem("cartList"));
                   return [];
                 
               },

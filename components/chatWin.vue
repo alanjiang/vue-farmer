@@ -14,7 +14,7 @@
             
                <img :src="msg.headimgurl" :msg="msg" width=30 height=30 @click.native="answer(msg.unionid)">&nbsp;
                <b><font color="red">{{msg.nickname}}</font></b>&nbsp;<font color="#636363">{{msg.sendtime}}</font>
-               
+               <br>
                {{msg.msgtxt}}
             </p>
        
@@ -24,16 +24,14 @@
        
        <p><cPage :pageOption="pageOption" :jumpTo="jumpTo"></cPage></p>
        <div style="clear:both;height:1px;"></div>
-      <p style="text-align:center;">  
-            <mt-button type="primary" size="small"  @click.native="getHistoryMessages">消息刷新</mt-button>
-       </p> 
-      <p v-if="this.cur_user">当前回复用户: {{this.cur_user.nickname }} &nbsp;<img :src="this.cur_user.headimgurl" width="30" height="30"></p>
+      
+      <p v-if="this.cur_user">当前回复用户: {{this.cur_user.nickname }} &nbsp;<img :src="this.cur_user.headimgurl" width="20" height="20"></p>
        
        <p>
        <mt-field label="留言"  type="textarea"  style="border:1px solid gray;" v-model="ws_msg" ></mt-field>
        </p>
        <p style="text-align:center;">  
-            <mt-button type="primary" size="large"  @click.native="sendMsgToKefuAndMyself">发送</mt-button>
+           <mt-button type="primary" size="small"  @click.native="getHistoryMessages">消息刷新</mt-button> &nbsp; <mt-button type="primary" size="small"  @click.native="sendMsgToKefuAndMyself">发送</mt-button>
        </p> 
        <p>
          技术支持：汗牛科技（广州）有限公司
