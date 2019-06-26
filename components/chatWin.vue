@@ -12,9 +12,9 @@
        
             <p v-for="msg in msgList" :msgList="msgList">
             
-               <img :src="msg.headimgurl" width=30 height=30>&nbsp;
+               <img :src="msg.headimgurl" :msg="msg" width=30 height=30 @click.native="answer(msg.unionid)">&nbsp;
                <b><font color="red">{{msg.nickname}}</font></b>&nbsp;<font color="#636363">{{msg.sendtime}}</font>
-               <mt-button  :msg="msg" type="primary" size="small" @click.native="answer(msg.unionid)">和我聊</mt-button><br>
+               
                {{msg.msgtxt}}
             </p>
        
@@ -226,7 +226,7 @@ export default {
      },
      //如果是客服回复，则必须选择一个用户进行进行回复
      sendMsgToKefuAndMyself () {
-     
+          
           if(!this.ws_msg){
              Toast({
   	    		  message: '发送内容不可为空',
@@ -237,6 +237,10 @@ export default {
   	    	     return false;
           }
           
+          Indicator.open({
+           text: '消息发送中...',
+           spinnerType: 'fading-circle'
+          });
            var message={};
            
            //判断是用户的身份，普通用户和客服
@@ -246,7 +250,7 @@ export default {
               if(this.selected_user_id == null ){
               
                   Toast({
-  	    		  message: '请选择一个聊天的用户',
+  	    		  message: '请点击用户的图像再发起聊天',
   	    		  position: 'middle',
   	    		  duration: 500
   	    	     });
@@ -288,6 +292,7 @@ export default {
            datatype: "json",
            success: function (message) 
 		   {
+		       Indicator.close();
 			   var resMsg=message.resMsg;
 			   var resCode=message.resCode;
 			   if(resCode == '0' ){
@@ -309,7 +314,7 @@ export default {
             
             error: function (jqXHR, textStatus, errorThrown) 
 		    {
-               
+               Indicator.close();
                Toast({
   	    		  message: "消息未发送成功，请检查网络",
   	    		  position: 'middle',
