@@ -101,10 +101,10 @@
                calCartList () {
                 
                  if(localStorage.getItem("cartList")!=null){
-                  
+                   
                    return JSON.parse(localStorage.getItem("cartList"));
                 }
-                  alert('--cartList='+localStorage.getItem("cartList"));
+                 
                   return [];
                 
               },
@@ -153,7 +153,7 @@
             },
             
             
-              resetCartList(){
+              resetCartList () {
              
             
               this.cartList=JSON.parse(localStorage.getItem("cartList"));

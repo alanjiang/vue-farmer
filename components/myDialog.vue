@@ -279,7 +279,10 @@ export default {
           this.selected2=-1;
           
           if(val.mer_attr_price.length >0 ){
-                if(val.mer_attr_price.length==1) return;
+                if(val.mer_attr_price.length==1) {
+                   this.price_span=val.mer_attr_price[0]['price'];
+                   return false;
+                }
                 val.mer_attr_price.sort(function(a,b){
                    if(a['price']<b['price']){
                        return -1;
