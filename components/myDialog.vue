@@ -190,7 +190,8 @@ export default {
            this.selected1=index;
            
           if(this.product.attrs.length == 2){
-             if(this.attr_id != null ){
+            //二维已经选择了，需要计算价格,修复当用户先选择二维再选择一维时价格不变的BUG
+             if(this.attr_id2 != null ){
                  var target=this.product.mer_attr_price.find(item=> {
                  var s1=this.attr_id1+','+this.attr_id2;
                  var s2=this.attr_id2+','+this.attr_id1;
