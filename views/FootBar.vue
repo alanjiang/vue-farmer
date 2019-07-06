@@ -20,16 +20,24 @@
       <div class="slider" v-show="adShow">
          <mt-swipe>
          <mt-swipe-item>
-           好消息！农场有新货啦！
+           景丰农场葡萄熟啦！现接受免费采摘体验！
            <img src="../images/ban1.jpg">
          </mt-swipe-item>
          <mt-swipe-item>
-          六月夏令营强势来袭！
+           千亩良田,绿树成荫,亲子游玩正当时!
           <img src="../images/ban2.jpg">
         </mt-swipe-item>
          <mt-swipe-item>
-           热带作物新品引进花都！
+           景丰热科农场，集产、学、研、亲子、观光、科普于一体的现代化农场。
            <img src="../images/ban3.jpg">
+         </mt-swipe-item>
+          <mt-swipe-item>
+           热带作物的代表：纯正手工咖啡、巧克力现场制作。
+           <img src="../images/ban4.jpg">
+         </mt-swipe-item>
+         <mt-swipe-item>
+            景丰热科农场体内设验馆，随时欢迎您的到来！
+           <img src="../images/ban5.jpg">
          </mt-swipe-item>
       </mt-swipe>
       
