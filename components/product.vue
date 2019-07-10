@@ -12,9 +12,7 @@
             <h4>{{ info.name }}</h4>
             
             <div class="product-cost">¥ {{ info.price }}</div>
-            <!--
-            <h4><mt-button type="primary" size="small" style="cursor:pointer;" @click.prevent="goBuy(info.id)">去购买</mt-button></h4>
-            -->
+           
              <div class="buy"><mt-button type="primary" size="small" style="cursor:pointer;" @click.prevent="addToCart(info.id,'')">去购买</mt-button></div>
            
             

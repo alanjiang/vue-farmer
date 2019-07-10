@@ -250,11 +250,6 @@ export default {
          
          this.total_price=this.price*this.count;
         
-      },
-      sayHello(){
-      
-       alert("sayHello");
-      
       }
     },
     
@@ -265,7 +260,7 @@ export default {
        
     },
      created(){
-     //组件传值:resetDialogShow is event from product.vue $emit 
+     //组件传值:resetDialogShow 监听来自product.vue $emit发出的事件
      this.$bus.on('resetDialogShow', (val) => {
          
           this.showMask=true;

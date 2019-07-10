@@ -73,10 +73,10 @@
     
       <mt-tab-container-item id="主页">
               
-              <!-- start of  mt-navbar -->
-              <mt-navbar v-model="category_selected" style="overflow:scroll">
-                 <mt-tab-item  v-for="category in categorys" :key="category.name" :id="category.name">
-                   <h4 style="font-weight:bold;font-size:1.2em;"> {{ category.name }} </h4>
+              <!-- 横向菜单条  mt-navbar -->
+              <mt-navbar v-model="category_selected"  style="overflow:scroll">
+                 <mt-tab-item  v-for="category in categorys" :key="category" :id="category"  >
+                   <h4 @click="switchCategory(category)" style="font-weight:bold;font-size:1.2em;"> {{ category }} </h4>
                  </mt-tab-item>
 
               </mt-navbar>
@@ -85,13 +85,13 @@
               
               <mt-tab-container v-model="category_selected">
               
-                  <mt-tab-container-item  v-for="category in categorys" :key="category.name" :id="category.name">
+                  <mt-tab-container-item  v-for="category in categorys" :key="category" :id="category">
                     
                     <!-- 展示商品-->
                     
                     <div v-show="list.length">
                
-                      <Product v-for="item in list" :info="item" :key="item.id"> </Product>
+                      <Product v-for="item in filterList" :info="item" :key="item.id"> </Product>
                   
                    
                      <div class="product-not-found" v-show="!list.length">
@@ -103,13 +103,15 @@
                
                   </div> 
                   
-                  <!-- <PopupItem> </PopupItem>-->
-                  
-                  <MyDialog></MyDialog>
-                  
                   <!--  end of 展示商品 --> 
-                 </mt-tab-container-item>
+                  
                
+                  </mt-tab-container-item>
+                  
+                  
+                  <!-- 弹出的商品挑选窗口 -->
+                  <MyDialog></MyDialog>
+             
              </mt-tab-container>
              
               
@@ -133,7 +135,7 @@
         </mt-tab-container-item>
         <mt-tab-container-item id="门店" v-model="shop">
           <mt-cell :title="shop.shop_name">
-            <img slot="icon" :src="shop.objectKey" width="120" height="120">
+            <img slot="icon" :src="shop.objectKey" >
           </mt-cell>
           <mt-cell :title="shop.shop_address"></mt-cell>
           <mt-cell :title="shop.shop_tel"></mt-cell>
@@ -201,11 +203,8 @@ export default {
   components:{Product,Cart,MyDialog,My,Kefu,ChatWin},
  
   computed:{
-     list_old () {
-       
-        return this.$store.state.productList;
-     },
      
+ 
       menus (){
          return  this.$store.state.menus;
      },
@@ -214,22 +213,31 @@ export default {
        
          return this.$store.state.adShow;
      
-     }, 
-     
-     categorys () {
-     
-         return this.$store.state.categorys;
      }
+     
+    
      
      
   
   },
   methods:{
     
-   
+    switchCategory(c) {
+          
+         this.filterList=[];//先清空
+         this.list.forEach(t=>{
+         
+           if(c == t.sort){
+               this.filterList.push(t);
+           }
+         
+         });
+       
+        
+    },
     fetchProductList(){
          
-          //alert('--fetchProductList--'+this.domain);
+          
           var __this=this;
          
           $.ajax({
@@ -246,8 +254,20 @@ export default {
 			   
 			   message.items.forEach(t=>{
 			      __this.list.push(t);
+			      __this.filterList.push(t);
 			   });
                
+               
+                //商品种类累加
+               __this.list.forEach(t=>{
+                  
+                  if(__this.categorys.indexOf(t.sort) == -1 ){
+                       __this.categorys.push(t.sort);
+                  }
+               });
+               //商品种类默认的选取值
+               
+               __this.category_selected=__this.categorys[0];
                
                if(message.shop != null ){
                    localStorage.setItem("shop",JSON.stringify(message.shop));
@@ -360,8 +380,14 @@ export default {
     return {
    
       selected: '主页',
-      category_selected:'科普体验',
+      //商品类别默认的选项
+      category_selected:'',
+      //商品类别
+      categorys:[],
+      //商品列表
       list:[],
+      //按分类过滤后的商品
+      filterList:[],
       shop: {'shop_name':'','shop_address':'','shop_discrption':'','objectKey':''},
       headimgurl:'../images/wenbixia.jpg',
       domain: constants.domain
