@@ -19,25 +19,44 @@
       
       <div class="slider" v-show="adShow">
          <mt-swipe>
-         <mt-swipe-item>
-           景丰农场葡萄熟啦！现接受免费采摘体验！
-           <img src="../images/ban1.jpg">
+         
+         
+         <mt-swipe-item :auto="2000">
+          <a href="#">
+           <img class="swipe-img" src="../images/ban1.jpg">
+          </a>
+           <span class="desc">景丰热科农场葡萄熟啦，接受免费采摘预定报名!</span>  
          </mt-swipe-item>
+       
          <mt-swipe-item>
-           千亩良田,绿树成荫,亲子游玩正当时!
-          <img src="../images/ban2.jpg">
+           
+            <a href="#">
+          <img class="swipe-img" src="../images/ban2.jpg">
+           </a>
+            <span class="desc">千亩良田,绿树成荫,亲子游玩正当时!</span>  
         </mt-swipe-item>
          <mt-swipe-item>
-           景丰热科农场，集产、学、研、亲子、观光、科普于一体的现代化农场。
-           <img src="../images/ban3.jpg">
+           
+            <a href="#">
+           <img class="swipe-img" src="../images/ban3.jpg">
+           </a>
+            <span class="desc">景丰热科农场，集产、学、研、亲子、观光、科普于一体的现代化农场。</span> 
          </mt-swipe-item>
+         
           <mt-swipe-item>
-           热带作物的代表：纯正手工咖啡、巧克力现场制作。
-           <img src="../images/ban4.jpg">
+           <a href="#">
+           
+           <img class="swipe-img" src="../images/ban4.jpg">
+           </a>
+           <span class="desc"> 景丰热科农场体内设验馆，随时欢迎您的到来！ </span> 
          </mt-swipe-item>
          <mt-swipe-item>
-            景丰热科农场体内设验馆，随时欢迎您的到来！
-           <img src="../images/ban5.jpg">
+         <a href="#">
+            
+           <img class="swipe-img" src="../images/ban5.jpg">
+          </a>
+           
+           <span class="desc">现场体验纯正手工咖啡、巧克力制作趴, 咖啡豆等一切材料产自景丰热科农场。 </span> 
          </mt-swipe-item>
       </mt-swipe>
       
@@ -118,6 +137,10 @@
           </mt-cell>
           <mt-cell :title="shop.shop_address"></mt-cell>
           <mt-cell :title="shop.shop_tel"></mt-cell>
+          
+          <mt-cell :title="shop.shop_discription"></mt-cell>
+          
+          
         </mt-tab-container-item>
         
         <mt-tab-container-item id="购物车">
@@ -375,6 +398,28 @@ export default {
     
     
  
+  }
+  
+  .swipe-img {
+    width: 100%;
+  }
+  .mint-swipe {
+    height: 300px;
+  }
+  .desc {
+    font-size:12px;
+    opacity: .9;
+    padding: 5px;
+    height: 40px;
+    width: 100%;
+    color: #fff;
+    background-color: gray;
+    position: absolute;
+    bottom: 0;
+    word-wrap: break-word; 
+    word-break: normal; 
+
+
   }
   
   

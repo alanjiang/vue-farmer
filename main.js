@@ -48,7 +48,7 @@ const Routers = [
 	 {
 	        path: '/index_prod.html',
 	        meta: {
-	            title: '智慧农场'
+	            title: '五谷农斋'
 	        },
 	        component: (resolve) => require(['./views/FootBar.vue'], resolve)
 	 },
