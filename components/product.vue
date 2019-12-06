@@ -4,10 +4,8 @@
         <router-link :info="info" :to="'/detail/' + info.id" class="product-main">
             
            <div class="image" >
-           <img :src="info.image"> 
-            <!--
-            <img :src="info.image"  :width="width" :height="height" v-bind="getImage(280,280,info.image)"> 
-            -->
+           <img :src="info.image" width="150" height="150"> 
+           
            </div>    
             <h4>{{ info.name }}</h4>
             

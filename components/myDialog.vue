@@ -7,7 +7,7 @@
            <div class="product-content-main">
                 <div class="product-image">
   
-                  <img :src="product.image">
+                  <img :src="product.image" width="150" height="150">
   
                 </div>
             
@@ -500,9 +500,9 @@ li:hover{
 
 .product-image{
 
-   width:40%;
+   width:150;
    
-   height:30%;
+   height:150;
    
    background:#fff;
    
@@ -511,8 +511,8 @@ li:hover{
 }
 
 .product-image  img{
-  max-width:40%;
-  max-height:30%;
+  max-width:150;
+  max-height:150;
 
 }
 .product-info{
