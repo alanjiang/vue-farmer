@@ -19,8 +19,7 @@
       
       <div class="slider" v-show="adShow">
          <mt-swipe>
-         
-         
+        
          <mt-swipe-item :auto="2000">
           <a href="#">
            <img class="swipe-img" src="../images/ban1.jpg">
@@ -64,26 +63,39 @@
       
       
       
-     <mt-cell class="page-part" title="当前位置" :value="selected" />
+     <mt-cell class="page-part" title="当前所在位置" :value="selected" />
       
       
     
-      <mt-tab-container class="page-tabbar-container" v-model="selected">
+      <mt-tab-container class="page-tabbar-container"  v-model="selected">
         
     
       <mt-tab-container-item id="主页">
               
               <!-- 横向菜单条  mt-navbar -->
-              <mt-navbar v-model="category_selected"  style="overflow:scroll">
-                 <mt-tab-item  v-for="category in categorys" :key="category" :id="category"  >
-                   <h4 @click="switchCategory(category)" style="font-weight:bold;font-size:1.2em;"> {{ category }} </h4>
-                 </mt-tab-item>
-
-              </mt-navbar>
-              
+               
+                <!--
+                <div  ref="wrapper" class="wrapper" v-model="category_selected">
+                 <ul ref="content">
+                   <li v-for="category in categorys" :key="category" :id="category"  @click="switchCategory(category)">  {{ category }} </li>
+                 </ul>
+                 </div>
+                 -->
+                 
+                 <mt-navbar v-model="category_selected"> 
+                  <div class="wrapper" ref="wrapper">
+                   <div class="content" ref="content">
+                   <mt-tab-item class="class-tab-item" v-for="category in categorys" :key="category" :id="category" @click.native="switchCategory(category)">
+                      {{ category }}
+                   </mt-tab-item>
+                  </div>
+                 </div>
+                 </mt-navbar>
+                
+           
               <!-- end of mt-navbar -->
               
-              <mt-tab-container v-model="category_selected">
+              <mt-tab-container class="tab-con" v-model="category_selected">
               
                   <mt-tab-container-item  v-for="category in categorys" :key="category" :id="category">
                     
@@ -147,7 +159,7 @@
         
         <mt-tab-container-item id="购物车">
           
-            <Cart/> 
+            <Cart :member="member"></Cart>
           
         </mt-tab-container-item>
         
@@ -156,7 +168,7 @@
           <!-- tab start -->
           
           
-           <My></My>
+           <My :member="member"  :member_authen="member_authen"></My>
           
           
           
@@ -199,6 +211,7 @@ import ChatWin from '../components/chatWin.vue';
 import { Navbar, TabItem } from 'mint-ui';
 import $ from 'jquery';
 import constants from '../utils/constants.js';
+import BScroll from 'better-scroll'
 export default {
   components:{Product,Cart,MyDialog,My,Kefu,ChatWin},
  
@@ -221,9 +234,28 @@ export default {
   
   },
   methods:{
-    
+  
+    verScroll () {
+      var width = this.categorys.length*100
+      //动态计算出滚动区域的大小，前面已经说过了，产生滚动的原因是滚动区域宽度大于父盒子宽度
+      this.$refs.content.style.width = width + 'px'  // 修改滚动区域的宽度
+      
+      const options = {
+        scrollY: false, 
+        scrollX: true,
+        mouseWheel: true,
+        click: true,
+        tap: true
+      }
+      var bScroll  = new BScroll(this.$refs.wrapper, options)
+     
+      bScroll.refresh();
+        
+    },
+  
+
     switchCategory(c) {
-          
+         
          this.filterList=[];//先清空
          this.list.forEach(t=>{
          
@@ -265,6 +297,14 @@ export default {
                        __this.categorys.push(t.sort);
                   }
                });
+               
+               
+              __this.$nextTick(() => {
+                 __this.verScroll()
+               });
+               
+               
+               
                //商品种类默认的选取值
                
                __this.category_selected=__this.categorys[0];
@@ -280,18 +320,28 @@ export default {
                    
                    //console.log('--shop_name='+__this.shop.shop_name);
                }
-               if(message.member_authen != null ){
                
+               console.log('***返回结果message：'+ JSON.stringify(message));
+               
+               if(message.member_authen ){
+                 
+                 __this.member_authen = message.member_authen;
                   __this.headimgurl=message.member_authen.headimgurl;
                   //告诉my.vue组件更新数据
-                  __this.$bus.emit('memberAuthenChange',message.member_authen);
+                  //__this.$bus.emit('memberAuthenChange',message.member_authen);
                  // alert('---fetchProductList---'+message.member_authen);
                   localStorage.setItem("global.member_authen",JSON.stringify(message.member_authen));
                    
                }
-               if(message.member != null ){
+               
+               
+               
+               if(message.member){
+                 
+                 __this.member = message.member;
+                 
                  //告诉my.vue组件更新数据
-                  __this.$bus.emit('memberChange',message.member);
+                  //__this.$bus.emit('memberChange',message.member);
                   localStorage.setItem("global.member",JSON.stringify(message.member));
                   // alert('---fetchProductList---'+message.member);
                }
@@ -369,16 +419,24 @@ export default {
       this.$store.dispatch('getMenus');
       this.$store.dispatch('getCategorys');
       this.fetchProductList();
+     
+      
   
   },
+  /*
+  "member_authen":{"id":4525,"type":"WECHAT","unionid":"ojMfy1fJQBkzG38T2YlvPODvENAo",
+  "openid":"oURPO0rvd9y1wjMaXY8LKcINfnck","authen_time":"2019-06-16 10:31:06","nickname":"鹏哥","gender":"男","country":"中国","province":"广东","city":"广州","headimgurl":"http://thirdwx.qlogo.cn/mmopen/vi_32/rBa6mpicpDMGAicvxSxgsUplRR8bt2VK6Ey2J149SibhDlaXzachsey8KhtemsVZP2zmqUvfX95vwdw2vwSITbodg/132","lastvisittime":"2020-02-15 13:04:16","media_type":null,
+  "member_id":5221,"shopid":2299,"visit_times":921},"member":null,
   
+  */
   
  
   name: 'FootBar',
   
   data() {
     return {
-   
+      member_authen: {},
+      member: {},
       selected: '主页',
       //商品类别默认的选项
       category_selected:'',
@@ -404,49 +462,51 @@ export default {
 };
 </script>
 
-<style scoped>
-  .page-tabbar {
-    overflow: hidden;
-  }
-  .slider{
+<style lang="stylus" scoped>
+ .page-tabbar
+   overflow: hidden;
+   .slider
        height:300px;
        padding:1px 3px;
-       border-bottom:1px solid gray;
-   }
+   .page-wrap 
+     overflow: auto;
+     height: 100%;
+     padding-top:40px;
+     padding-bottom: 60px;
+     background:#FAFAFA;
+     .swipe-img 
+       width: 100%
+     .desc
+       font-size: 12px
+       opacity: .9
+       padding: 5px
+       height: 40px
+       width: 100%
+       color: #fff
+       position: absolute
+       bottom: 30px
+       word-wrap: break-word 
+       word-break: normal 
+   .wrapper
+    position: relative
+    height: 30px
+    width: 100%
+    display: block
+    
+    .content
+      height: 25px
+      display: flex
+      flex-direction: row
+      padding: 2px
+      .class-tab-item
+         width: 100px
+         height: 30px
+         font-size: 14px
+         font-weight: 500
+         display: inline-block
+         margin-right: 5px
+         overflow: hidden
+   .tab-con
+      margin-top: 50px
    
- 
-   .page-wrap {
-    overflow: auto;
-    height: 100%;
-    padding-top:40px;
-    padding-bottom: 60px;
-    background:#FAFAFA;
-    
-    
- 
-  }
-  
-  .swipe-img {
-    width: 100%;
-  }
-  .mint-swipe {
-    height: 300px;
-  }
-  .desc {
-    font-size:12px;
-    opacity: .9;
-    padding: 5px;
-    height: 40px;
-    width: 100%;
-    color: #fff;
-    background-color: gray;
-    position: absolute;
-    bottom: 0;
-    word-wrap: break-word; 
-    word-break: normal; 
-
-
-  }
-  
-  
 </style>

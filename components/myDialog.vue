@@ -178,7 +178,7 @@ export default {
              //调用main.js中的函数
              
              this.$store.commit('addCart', params);
-             
+             this.symbol='';
              //调用cart.vue组件中的this.$bus.on('cartChange',..)事件
              this.$bus.emit('cartChange',params);
           

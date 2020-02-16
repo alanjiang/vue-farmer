@@ -14,3 +14,38 @@
              });
        
        }
+       
+       
+ 
+ 
+ 
+       
+ (1)       
+  props: {     
+   fold: {
+        type: Boolean,
+        default: true
+      }    
+  },
+   data() {
+      return {
+        balls: createBalls(),
+        listFold: this.fold
+      }
+    },
+  
+ (2)  
+  watch: {
+      fold(newVal) {
+        this.listFold = newVal
+      },
+      totalCount(count) {
+        if (!this.fold && count === 0) {
+          this._hideShopCartList()
+        }
+      }
+    },     
+       
+       
+       
+       

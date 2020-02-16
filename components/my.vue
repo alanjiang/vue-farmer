@@ -124,45 +124,34 @@
            
         </div>
         
-          
-          
-       
-        
-            
-            
       </mt-tab-container-item>
     
     
       <mt-tab-container-item id="会员资料">
       
       <p></p>
-      
-        <mt-cell :title="member_authen.nickname">
+        
+        <div v-show="member_authen.unionid">
+        <mt-cell  :title="member_authen.nickname">
             <img slot="icon" :src="member_authen.headimgurl" width="90" height="90">
              
         </mt-cell>
-       
+       </div>
      
       
-      <div v-show="member.mobile">
+      <div v-if="member && member.mobile">
         <mt-cell title="手机号">{{ member.mobile }} </mt-cell>
             
         <mt-cell title="认证时间">{{ member.regtime }}</mt-cell>
        
       </div>
        
-        <div v-show="wechat_authen_show">
+        <div v-else>
         
          <mt-cell title="会员认证"></mt-cell>
-        
-        
-         
-         
+       
           <mt-field label="手机号" placeholder="您的手机号" v-model="mobile"></mt-field>
-          
-          
-          
-          
+        
           <mt-field label="短信验证码" placeholder="验证码" type="text" v-model="code" @blur.native.capture="authen">
           
           <mt-button type="primary" size="small" :disabled="button_disabled" @click="fetch_code">{{ this.fetch_code_title }}</mt-button>
@@ -172,23 +161,8 @@
          <mt-button type="primary" :disabled="authen_button_disabled" @click="authen">认证会员</mt-button>
          
         </div>
-        <div v-show="!mobile_binded">
         
-        <mt-cell title="未验证手机号"></mt-cell>
-        
-        
-        </div>
-        
-         <mt-button  v-show="!mobile_binded" type="primary"  @click="show_member_authen">验证手机号</mt-button>
-         
-        
-        <div v-show="mobile_binded">
-        
-        <mt-cell title="会员手机号已验证"></mt-cell>
-
-        
-        </div>
-        
+       
         
       </mt-tab-container-item>
       
@@ -252,7 +226,21 @@ export default {
 
   components:{AddressModify},
   name: 'My',
-
+   props: {
+      member: {
+         type: Object,
+         default() {
+           return {}
+         }
+      },
+      member_authen:{
+        type: Object,
+         default() {
+          return {}
+         }
+      }
+      
+    },
   data() {
     return {
       domain: constants.domain,
@@ -261,8 +249,6 @@ export default {
       wechat_authen_show: false,
       mobile:'',
       code:'',
-      member_authen:{},
-      member:{},
       count_down:90,
       curCount:0, 
       InterValObj:null,
@@ -946,7 +932,8 @@ export default {
             
        },
       fetch_orders () {
-         
+          
+          
           var __this=this;
           $.ajax({
            type:"GET",
@@ -1000,7 +987,7 @@ export default {
        fetch_code () {
           //点击获取验证码后，按钮不可点击。
           this.button_disabled=true;
-          if(this.mobile == '' ){
+          if(this.mobile == ' ' ){
              Toast({
   	    		  message: '请填写手机号',
   	    		  position: 'middle',
@@ -1026,7 +1013,11 @@ export default {
 			   var resMsg=message.resMsg;
 			   var resCode=message.resCode;
 			   if(resCode == '0' ){
-			     
+			     Toast({
+  	    		  message: '短信发送成功',
+  	    		  position: 'middle',
+  	    		  duration: 500
+  	    	     });
 			      __this.sendCode(__this.mobile); //向手机号发送一条验证码
 			     
 			   }else
@@ -1065,6 +1056,7 @@ export default {
            spinnerType: 'fading-circle'
         });
         this.authen_button_disabled=false;
+       
         var json={"mobile":this.mobile,"code":this.code,"member_authen_id":this.member_authen.id};
 		var jsondata=JSON.stringify(json);
 		var __this=this;
@@ -1083,15 +1075,15 @@ export default {
   	    		     position: 'middle',
   	    		     duration: 1000
   	    	    });
-			   
+			   //"id":5241,"mobile":"13926003676","regtime":"2019-09-15 16:27:29"
 			   if(resCode=='0') 
 			   {
-			       __this.wechat_authen_show=false; 
-			       __this.mobile_binded=true;
-			       __this.member={};
-			       __this.member.id=message.id;
-			       __this.member.mobile=message.mobile;
-			       __this.member.regtime=message.regtime;
+			       
+			       __this.mobile_binded = true;
+			       __this.member.id = message.id
+			       __this.member.mobile = message.mobile;
+			       __this.member.regtime = message.regtime;
+			       __this.member_authen.member_id = message.id;
 			       
 			       //向cart.vue发事件，更新 member
                    __this.$bus.emit('memberChange',__this.member);
@@ -1210,6 +1202,9 @@ export default {
   },
   
   created(){
+  
+           
+ 
               // 监听来自cart.vue中结算发出的事件：
              this.$bus.on('wechatShow', (val) => {
                     this.selected=val;

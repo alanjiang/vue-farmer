@@ -65,6 +65,17 @@
     import $ from 'jquery';
     import constants from '../utils/constants.js';
     export default {
+    
+    props: {
+      member: {
+        type: Object,
+         default() {
+          return {}
+         }
+      }
+     
+    },
+    
       data () {
             return {
                
@@ -72,9 +83,7 @@
                 promotion: 0,
                
                 cartList: this.calCartList (),
-                
-                member: null,
-                
+              
                 domain: constants.domain
                 
             }
@@ -161,8 +170,9 @@
             },
             
             handleOrder () {
+                 
                 
-                 if(this.member ==null){
+                 if(!this.member.id){
                  
                     Toast({
   	    		    message: '下单之前需要会员认证!',
@@ -181,11 +191,13 @@
                  }
                 
         },
-        
+        //下单操作
         makeOrder(){
         
          var obj={};
          obj.mers=this.cartList;
+         
+         //alert('=>makeOrder:'+JSON.stringify(obj));
          var jsondata=JSON.stringify(obj);
          Indicator.open({
              text: '订单生成中...',
@@ -258,15 +270,14 @@
               this.cartList=JSON.parse(localStorage.getItem("cartList"));
                 
              });
-             
+             // FootBar.vue传过来的
+             /*
              this.$bus.on('memberChange', (val) => {
                
+               alert('=> receive memberChane event:'+JSON.stringify(val));
                this.member=val;
-               
-              
-           
-                
              });
+             */
              
              
        
